@@ -1,0 +1,1219 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDLC — Blueprint Notes</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#f6f8fa;
+    --bg2:#eaf0f4;
+    --grid:rgba(28,58,82,0.07);
+    --line:#1c5d78;
+    --line-dim:#a9bdc9;
+    --accent:#b5651d;
+    --text:#152a3a;
+    --muted:#5b7285;
+    --card:#ffffff;
+    --border:#d3dde3;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      linear-gradient(var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      linear-gradient(90deg, var(--grid) 1px, transparent 1px) 0 0/28px 28px,
+      var(--bg);
+    color:var(--text);
+    font-family:'Inter',sans-serif;
+    line-height:1.5;
+    padding:0 0 80px;
+  }
+  h1,h2,h3,.mono{font-family:'IBM Plex Mono',monospace;}
+
+  /* HERO */
+  .hero{
+    padding:56px 24px 40px;
+    text-align:center;
+    border-bottom:1px solid var(--border);
+    position:relative;
+  }
+  .hero .tag{
+    color:var(--accent);
+    font-family:'IBM Plex Mono',monospace;
+    font-size:13px;
+    letter-spacing:3px;
+    text-transform:uppercase;
+  }
+  .hero h1{
+    font-size:clamp(28px,5vw,44px);
+    margin:10px 0 6px;
+    color:var(--text);
+    letter-spacing:1px;
+  }
+  .hero h1 span{color:var(--line);}
+  .hero p{color:var(--muted);font-size:15px;max-width:560px;margin:0 auto;}
+
+  /* TOC */
+  .toc{
+    max-width:960px;margin:28px auto;padding:0 20px;
+    display:flex;flex-wrap:wrap;gap:8px;justify-content:center;
+  }
+  .toc a{
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12px;color:var(--line);
+    border:1px solid var(--line-dim);
+    padding:6px 12px;border-radius:2px;
+    text-decoration:none;
+    transition:.15s;
+    white-space:nowrap;
+  }
+  .toc a:hover{background:var(--line);color:var(--bg);}
+
+  .wrap{max-width:960px;margin:0 auto;padding:0 20px;}
+
+  /* CARD */
+  .card{
+    position:relative;
+    background:var(--card);
+    border:1px solid var(--border);
+    border-radius:4px;
+    margin:34px 0;
+    box-shadow:0 1px 3px rgba(28,58,82,0.06);
+    padding:26px 26px 22px;
+  }
+  .card::before,.card::after,.corner-tl,.corner-br{
+    content:"";position:absolute;width:14px;height:14px;
+    border-color:var(--line);border-style:solid;
+  }
+  .card::before{top:-1px;left:-1px;border-width:2px 0 0 2px;}
+  .card::after{bottom:-1px;right:-1px;border-width:0 2px 2px 0;}
+
+  .card h2{
+    margin:0 0 4px;
+    font-size:19px;
+    color:var(--text);
+    display:flex;align-items:baseline;gap:10px;
+  }
+  .card h2 .no{color:var(--accent);font-size:14px;}
+  .card .sub{color:var(--muted);font-size:12.5px;margin-bottom:16px;font-family:'IBM Plex Mono',monospace;}
+
+  .diagram{
+    background:var(--bg2);
+    border:1px dashed var(--line-dim);
+    border-radius:4px;
+    padding:14px 8px;
+    margin:16px 0;
+    display:flex;justify-content:center;
+  }
+  .diagram svg{max-width:100%;height:auto;}
+
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:14px;}
+  @media(max-width:640px){.grid2{grid-template-columns:1fr;}}
+
+  .box{
+    background:var(--bg2);
+    border-left:3px solid var(--line);
+    padding:10px 14px;
+    border-radius:2px;
+  }
+  .box.neg{border-left-color:#e86b6b;}
+  .box h4{
+    margin:0 0 6px;
+    font-size:11.5px;
+    letter-spacing:1.5px;
+    text-transform:uppercase;
+    color:var(--line);
+    font-family:'IBM Plex Mono',monospace;
+  }
+  .box.neg h4{color:#e86b6b;}
+  .box ul{margin:0;padding-left:16px;font-size:13.5px;}
+  .box li{margin-bottom:4px;color:#1e3242;}
+
+  .keyline{
+    margin-top:14px;
+    font-size:13.5px;
+    color:var(--text);
+    background:rgba(255,184,107,0.08);
+    border:1px solid rgba(255,184,107,0.35);
+    padding:9px 13px;
+    border-radius:3px;
+  }
+  .keyline b{color:var(--accent);}
+
+  .use{font-size:13px;color:var(--muted);margin-top:10px;}
+  .use b{color:var(--line);}
+
+  /* comparison table */
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:10px;}
+  th,td{border:1px solid var(--border);padding:9px 10px;text-align:left;}
+  th{background:var(--bg2);color:var(--line);font-family:'IBM Plex Mono',monospace;font-size:11.5px;letter-spacing:1px;text-transform:uppercase;}
+  td{color:#1e3242;}
+  tr:nth-child(even) td{background:rgba(255,255,255,0.02);}
+
+  .foot{text-align:center;color:var(--muted);font-size:12px;margin-top:50px;font-family:'IBM Plex Mono',monospace;}
+
+  .calc{
+    background:var(--bg2);
+    border:1px solid var(--border);
+    border-radius:3px;
+    padding:12px 16px;
+    margin:12px 0;
+    font-family:'IBM Plex Mono',monospace;
+    font-size:12.5px;
+    color:#1e3242;
+    line-height:1.65;
+    overflow-x:auto;
+  }
+  .calc .r{color:var(--muted);}
+  .calc .ans{color:var(--accent);font-weight:700;}
+  .section-divider{
+    text-align:center;color:var(--muted);font-family:'IBM Plex Mono',monospace;
+    font-size:12px;letter-spacing:3px;text-transform:uppercase;
+    margin:44px 0 -10px;
+  }
+
+  text{fill:var(--text);font-family:'IBM Plex Mono',monospace;}
+  .lbl{fill:var(--line);font-size:11px;}
+  .small{fill:var(--muted);font-size:9.5px;}
+</style>
+</head>
+<body>
+
+<div class="hero">
+  <div class="tag">Software Engineering · Module 1</div>
+  <h1>SDLC <span>Models</span></h1>
+  <p>Blueprint-style revision notes — definitions, diagrams &amp; quick recall points.</p>
+</div>
+
+<div class="toc">
+  <a href="#sdlc">01 SDLC</a>
+  <a href="#waterfall">02 Classic Waterfall</a>
+  <a href="#iterwaterfall">03 Iterative Waterfall</a>
+  <a href="#vmodel">04 V-Shaped</a>
+  <a href="#proto">05 Prototyping</a>
+  <a href="#incremental">06 Incremental</a>
+  <a href="#evolutionary">07 Evolutionary</a>
+  <a href="#spiral">08 Spiral</a>
+  <a href="#agile">09 Agile</a>
+  <a href="#scrum">10 Scrum</a>
+  <a href="#compare">⇢ Quick Compare</a>
+</div>
+<div class="toc">
+  <a href="#reqs">11 Requirements</a>
+  <a href="#funreq">12 Functional/Non-func</a>
+  <a href="#srs">13 SRS</a>
+  <a href="#userreq">14 User Requirements</a>
+  <a href="#dfd">15 DFD Basics</a>
+  <a href="#dfdlevels">16 DFD Levels</a>
+  <a href="#dfdtype">17 Logical vs Physical DFD</a>
+  <a href="#design">18 Function vs Object Design</a>
+  <a href="#spm">19 SPM</a>
+  <a href="#riskid">20 Risk Identification</a>
+  <a href="#riskassess">21 Risk Assessment</a>
+  <a href="#riskctrl">22 Risk Control vs Mitigation</a>
+  <a href="#cocomo">23 COCOMO</a>
+  <a href="#cpm">24 CPM/PERT</a>
+  <a href="#vv">25 Verification vs Validation</a>
+  <a href="#testing">26 Testing Types/Levels</a>
+  <a href="#errorseed">27 Error Seeding</a>
+</div>
+
+<div class="wrap">
+
+  <!-- 1. SDLC -->
+  <section class="card" id="sdlc">
+    <h2><span class="no">01</span> SDLC — Software Development Life Cycle</h2>
+    <div class="sub">A defined sequence of stages followed to build quality software.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 760 130" width="740">
+        <defs>
+          <marker id="arr1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/>
+          </marker>
+        </defs>
+        <!-- 6 boxes -->
+        <g font-size="11.5">
+        <rect x="10" y="45" width="100" height="42" rx="3" fill="none" stroke="#1c5d78"/>
+        <text x="60" y="70" text-anchor="middle">Requirement</text>
+        <rect x="130" y="45" width="100" height="42" rx="3" fill="none" stroke="#1c5d78"/>
+        <text x="180" y="70" text-anchor="middle">Design</text>
+        <rect x="250" y="45" width="110" height="42" rx="3" fill="none" stroke="#1c5d78"/>
+        <text x="305" y="70" text-anchor="middle">Implementation</text>
+        <rect x="380" y="45" width="100" height="42" rx="3" fill="none" stroke="#1c5d78"/>
+        <text x="430" y="70" text-anchor="middle">Testing</text>
+        <rect x="500" y="45" width="100" height="42" rx="3" fill="none" stroke="#1c5d78"/>
+        <text x="550" y="70" text-anchor="middle">Deployment</text>
+        <rect x="620" y="45" width="120" height="42" rx="3" fill="none" stroke="#1c5d78"/>
+        <text x="680" y="70" text-anchor="middle">Maintenance</text>
+        </g>
+        <line x1="110" y1="66" x2="128" y2="66" stroke="#1c5d78" marker-end="url(#arr1)"/>
+        <line x1="230" y1="66" x2="248" y2="66" stroke="#1c5d78" marker-end="url(#arr1)"/>
+        <line x1="360" y1="66" x2="378" y2="66" stroke="#1c5d78" marker-end="url(#arr1)"/>
+        <line x1="480" y1="66" x2="498" y2="66" stroke="#1c5d78" marker-end="url(#arr1)"/>
+        <line x1="600" y1="66" x2="618" y2="66" stroke="#1c5d78" marker-end="url(#arr1)"/>
+        <path d="M680,45 C680,15 60,15 60,45" fill="none" stroke="#b5651d" stroke-dasharray="4 3" marker-end="url(#arr1)"/>
+        <text x="370" y="22" text-anchor="middle" class="small" fill="#b5651d">feedback / new requirement</text>
+      </svg>
+    </div>
+
+    <div class="keyline"><b>Memorize:</b> R-D-I-T-D-M → "Real Developers Implement Tests, Don't Miss!"</div>
+    <p class="use"><b>Note:</b> SDLC is the umbrella process. Waterfall, V-model, Prototyping, Incremental, Evolutionary — all are <i>models</i> (implementations) of this same life cycle.</p>
+  </section>
+
+  <!-- 2. Classic Waterfall -->
+  <section class="card" id="waterfall">
+    <h2><span class="no">02</span> Classic Waterfall Model</h2>
+    <div class="sub">Strictly linear — one phase finishes completely before the next starts. No going back.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 260 380" width="260">
+        <defs>
+          <marker id="arr2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/>
+          </marker>
+        </defs>
+        <g font-size="12">
+        <rect x="30" y="10" width="200" height="40" rx="3" fill="none" stroke="#1c5d78"/><text x="130" y="35" text-anchor="middle">Requirements</text>
+        <rect x="30" y="75" width="200" height="40" rx="3" fill="none" stroke="#1c5d78"/><text x="130" y="100" text-anchor="middle">Design</text>
+        <rect x="30" y="140" width="200" height="40" rx="3" fill="none" stroke="#1c5d78"/><text x="130" y="165" text-anchor="middle">Implementation</text>
+        <rect x="30" y="205" width="200" height="40" rx="3" fill="none" stroke="#1c5d78"/><text x="130" y="230" text-anchor="middle">Testing</text>
+        <rect x="30" y="270" width="200" height="40" rx="3" fill="none" stroke="#1c5d78"/><text x="130" y="295" text-anchor="middle">Deployment</text>
+        <rect x="30" y="335" width="200" height="40" rx="3" fill="none" stroke="#1c5d78"/><text x="130" y="360" text-anchor="middle">Maintenance</text>
+        </g>
+        <line x1="130" y1="50" x2="130" y2="73" stroke="#1c5d78" marker-end="url(#arr2)"/>
+        <line x1="130" y1="115" x2="130" y2="138" stroke="#1c5d78" marker-end="url(#arr2)"/>
+        <line x1="130" y1="180" x2="130" y2="203" stroke="#1c5d78" marker-end="url(#arr2)"/>
+        <line x1="130" y1="245" x2="130" y2="268" stroke="#1c5d78" marker-end="url(#arr2)"/>
+        <line x1="130" y1="310" x2="130" y2="333" stroke="#1c5d78" marker-end="url(#arr2)"/>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="box"><h4>Advantages</h4><ul>
+        <li>Simple, easy to understand &amp; manage</li>
+        <li>Clear milestones &amp; deliverables per phase</li>
+        <li>Works well for small, well-defined projects</li>
+      </ul></div>
+      <div class="box neg"><h4>Disadvantages</h4><ul>
+        <li>No feedback path — can't go back</li>
+        <li>Working software only at the very end</li>
+        <li>High risk if requirements change</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>Memorize:</b> "No looking back" → strict one-way arrows only.</div>
+  </section>
+
+  <!-- 3. Iterative Waterfall -->
+  <section class="card" id="iterwaterfall">
+    <h2><span class="no">03</span> Iterative Waterfall Model</h2>
+    <div class="sub">Classic waterfall + feedback loops — a phase can send info back to the previous one.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 320 380" width="300">
+        <defs>
+          <marker id="arr3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/>
+          </marker>
+          <marker id="arr3b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#b5651d"/>
+          </marker>
+        </defs>
+        <g font-size="12">
+        <rect x="60" y="10" width="200" height="40" rx="3" fill="none" stroke="#1c5d78"/><text x="160" y="35" text-anchor="middle">Requirements</text>
+        <rect x="60" y="75" width="200" height="40" rx="3" fill="none" stroke="#1c5d78"/><text x="160" y="100" text-anchor="middle">Design</text>
+        <rect x="60" y="140" width="200" height="40" rx="3" fill="none" stroke="#1c5d78"/><text x="160" y="165" text-anchor="middle">Implementation</text>
+        <rect x="60" y="205" width="200" height="40" rx="3" fill="none" stroke="#1c5d78"/><text x="160" y="230" text-anchor="middle">Testing</text>
+        <rect x="60" y="270" width="200" height="40" rx="3" fill="none" stroke="#1c5d78"/><text x="160" y="295" text-anchor="middle">Deployment</text>
+        <rect x="60" y="335" width="200" height="40" rx="3" fill="none" stroke="#1c5d78"/><text x="160" y="360" text-anchor="middle">Maintenance</text>
+        </g>
+        <line x1="160" y1="50" x2="160" y2="73" stroke="#1c5d78" marker-end="url(#arr3)"/>
+        <line x1="160" y1="115" x2="160" y2="138" stroke="#1c5d78" marker-end="url(#arr3)"/>
+        <line x1="160" y1="180" x2="160" y2="203" stroke="#1c5d78" marker-end="url(#arr3)"/>
+        <line x1="160" y1="245" x2="160" y2="268" stroke="#1c5d78" marker-end="url(#arr3)"/>
+        <line x1="160" y1="310" x2="160" y2="333" stroke="#1c5d78" marker-end="url(#arr3)"/>
+        <!-- feedback loops on left -->
+        <path d="M60,205 C20,180 20,120 58,95" fill="none" stroke="#b5651d" stroke-dasharray="4 3" marker-end="url(#arr3b)"/>
+        <path d="M60,140 C25,120 25,80 58,55" fill="none" stroke="#b5651d" stroke-dasharray="4 3" marker-end="url(#arr3b)"/>
+        <path d="M60,270 C15,240 15,150 58,55" fill="none" stroke="#b5651d" stroke-dasharray="4 3" marker-end="url(#arr3b)"/>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="box"><h4>Advantages</h4><ul>
+        <li>Errors can be corrected earlier</li>
+        <li>More flexible than classic waterfall</li>
+      </ul></div>
+      <div class="box neg"><h4>Disadvantages</h4><ul>
+        <li>No early prototype for customer</li>
+        <li>Late changes still costly</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>Memorize:</b> Same 6 phases as waterfall, but arrows can point <b>backward</b> too.</div>
+  </section>
+
+  <!-- 4. V-Shaped -->
+  <section class="card" id="vmodel">
+    <h2><span class="no">04</span> V-Shaped Model</h2>
+    <div class="sub">Verification (left, going down) + Validation (right, going up) — every dev phase has a matching test phase.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 460 300" width="440">
+        <g font-size="11">
+        <!-- left side -->
+        <rect x="10" y="10" width="120" height="34" rx="3" fill="none" stroke="#1c5d78"/><text x="70" y="31" text-anchor="middle">Requirements</text>
+        <rect x="40" y="60" width="120" height="34" rx="3" fill="none" stroke="#1c5d78"/><text x="100" y="81" text-anchor="middle">System Design</text>
+        <rect x="70" y="110" width="120" height="34" rx="3" fill="none" stroke="#1c5d78"/><text x="130" y="131" text-anchor="middle">Arch. Design</text>
+        <rect x="100" y="160" width="120" height="34" rx="3" fill="none" stroke="#1c5d78"/><text x="160" y="181" text-anchor="middle">Module Design</text>
+        <!-- bottom -->
+        <rect x="170" y="210" width="120" height="34" rx="3" fill="none" stroke="#b5651d"/><text x="230" y="231" text-anchor="middle" fill="#b5651d">Coding</text>
+        <!-- right side -->
+        <rect x="220" y="160" width="120" height="34" rx="3" fill="none" stroke="#1c5d78"/><text x="280" y="181" text-anchor="middle">Unit Testing</text>
+        <rect x="250" y="110" width="120" height="34" rx="3" fill="none" stroke="#1c5d78"/><text x="310" y="131" text-anchor="middle">Integration Test</text>
+        <rect x="280" y="60" width="120" height="34" rx="3" fill="none" stroke="#1c5d78"/><text x="340" y="81" text-anchor="middle">System Testing</text>
+        <rect x="310" y="10" width="120" height="34" rx="3" fill="none" stroke="#1c5d78"/><text x="370" y="31" text-anchor="middle">Acceptance Test</text>
+        </g>
+        <!-- V connective lines -->
+        <line x1="70" y1="44" x2="100" y2="60" stroke="#a9bdc9"/>
+        <line x1="100" y1="94" x2="130" y2="110" stroke="#a9bdc9"/>
+        <line x1="130" y1="144" x2="160" y2="160" stroke="#a9bdc9"/>
+        <line x1="220" y1="194" x2="230" y2="210" stroke="#a9bdc9"/>
+        <line x1="230" y1="210" x2="280" y2="194" stroke="#a9bdc9"/>
+        <line x1="280" y1="160" x2="310" y2="144" stroke="#a9bdc9"/>
+        <line x1="310" y1="110" x2="340" y2="94" stroke="#a9bdc9"/>
+        <line x1="340" y1="60" x2="370" y2="44" stroke="#a9bdc9"/>
+        <!-- dashed pair mapping -->
+        <line x1="130" y1="27" x2="370" y2="27" stroke="#b5651d" stroke-dasharray="3 3"/>
+        <line x1="160" y1="77" x2="340" y2="77" stroke="#b5651d" stroke-dasharray="3 3"/>
+        <line x1="190" y1="127" x2="310" y2="127" stroke="#b5651d" stroke-dasharray="3 3"/>
+        <line x1="220" y1="177" x2="280" y2="177" stroke="#b5651d" stroke-dasharray="3 3"/>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="box"><h4>Advantages</h4><ul>
+        <li>Testing planned from day one</li>
+        <li>Defects caught early per phase</li>
+        <li>Good for small, well-understood projects</li>
+      </ul></div>
+      <div class="box neg"><h4>Disadvantages</h4><ul>
+        <li>Very rigid, like waterfall</li>
+        <li>No early working prototype</li>
+        <li>Costly &amp; hard to handle changing requirements</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>Memorize:</b> "V for Verification &amp; Validation" — left leg builds, right leg tests, each pair mirrors the other.</div>
+  </section>
+
+  <!-- 5. Prototyping -->
+  <section class="card" id="proto">
+    <h2><span class="no">05</span> Prototyping Model</h2>
+    <div class="sub">Build a quick working sample first, let the customer react, refine, then build the real thing.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 380 300" width="360">
+        <defs>
+          <marker id="arr5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/>
+          </marker>
+        </defs>
+        <g font-size="11">
+        <rect x="140" y="10" width="140" height="38" rx="3" fill="none" stroke="#1c5d78"/><text x="210" y="34" text-anchor="middle">Requirement Gathering</text>
+        <rect x="240" y="80" width="120" height="38" rx="3" fill="none" stroke="#1c5d78"/><text x="300" y="104" text-anchor="middle">Quick Design</text>
+        <rect x="240" y="150" width="120" height="38" rx="3" fill="none" stroke="#b5651d"/><text x="300" y="174" text-anchor="middle" fill="#b5651d">Build Prototype</text>
+        <rect x="20" y="150" width="140" height="38" rx="3" fill="none" stroke="#1c5d78"/><text x="90" y="174" text-anchor="middle">Customer Evaluation</text>
+        <rect x="20" y="80" width="140" height="38" rx="3" fill="none" stroke="#1c5d78"/><text x="90" y="104" text-anchor="middle">Refine Prototype</text>
+        <rect x="120" y="230" width="140" height="38" rx="3" fill="none" stroke="#1c5d78"/><text x="190" y="254" text-anchor="middle">Engineer Final Product</text>
+        </g>
+        <line x1="210" y1="48" x2="280" y2="78" stroke="#1c5d78" marker-end="url(#arr5)"/>
+        <line x1="300" y1="118" x2="300" y2="148" stroke="#1c5d78" marker-end="url(#arr5)"/>
+        <line x1="238" y1="169" x2="162" y2="169" stroke="#1c5d78" marker-end="url(#arr5)"/>
+        <line x1="90" y1="150" x2="90" y2="120" stroke="#1c5d78" marker-end="url(#arr5)"/>
+        <line x1="130" y1="98" x2="238" y2="98" stroke="#1c5d78" marker-end="url(#arr5)"/>
+        <line x1="140" y1="188" x2="185" y2="228" stroke="#b5651d" marker-end="url(#arr5)"/>
+        <text x="205" y="220" class="small" fill="#b5651d">approved</text>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="box"><h4>Advantages</h4><ul>
+        <li>Requirements get clarified early</li>
+        <li>Customer sees &amp; feels the system sooner</li>
+        <li>Reduces misunderstanding of needs</li>
+      </ul></div>
+      <div class="box neg"><h4>Disadvantages</h4><ul>
+        <li>Customer may expect prototype = final product</li>
+        <li>Scope/requirements can keep expanding</li>
+        <li>Extra cost of building throwaway prototypes</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>Memorize:</b> Gather → Design → Build → Evaluate → Refine (loop) → Final Product.</div>
+  </section>
+
+  <!-- 6. Incremental -->
+  <section class="card" id="incremental">
+    <h2><span class="no">06</span> Incremental Model</h2>
+    <div class="sub">Whole system split into small increments; each increment is a mini-waterfall delivering a usable piece.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 420 260" width="400">
+        <g font-size="10.5">
+        <!-- increment 1 -->
+        <rect x="10" y="20" width="70" height="26" rx="2" fill="none" stroke="#1c5d78"/><text x="45" y="37" text-anchor="middle">Reqs</text>
+        <rect x="90" y="20" width="70" height="26" rx="2" fill="none" stroke="#1c5d78"/><text x="125" y="37" text-anchor="middle">Design</text>
+        <rect x="170" y="20" width="70" height="26" rx="2" fill="none" stroke="#1c5d78"/><text x="205" y="37" text-anchor="middle">Code</text>
+        <rect x="250" y="20" width="70" height="26" rx="2" fill="none" stroke="#1c5d78"/><text x="285" y="37" text-anchor="middle">Test</text>
+        <rect x="330" y="20" width="80" height="26" rx="2" fill="none" stroke="#b5651d"/><text x="370" y="37" text-anchor="middle" fill="#b5651d">Deliver v1</text>
+
+        <!-- increment 2 -->
+        <rect x="90" y="70" width="70" height="26" rx="2" fill="none" stroke="#1c5d78"/><text x="125" y="87" text-anchor="middle">Reqs</text>
+        <rect x="170" y="70" width="70" height="26" rx="2" fill="none" stroke="#1c5d78"/><text x="205" y="87" text-anchor="middle">Design</text>
+        <rect x="250" y="70" width="70" height="26" rx="2" fill="none" stroke="#1c5d78"/><text x="285" y="87" text-anchor="middle">Code</text>
+        <rect x="330" y="70" width="80" height="26" rx="2" fill="none" stroke="#1c5d78"/><text x="370" y="87" text-anchor="middle">Test</text>
+        <rect x="330" y="120" width="80" height="26" rx="2" fill="none" stroke="#b5651d"/><text x="370" y="137" text-anchor="middle" fill="#b5651d">Deliver v2</text>
+
+        <!-- increment 3 -->
+        <rect x="170" y="170" width="70" height="26" rx="2" fill="none" stroke="#1c5d78"/><text x="205" y="187" text-anchor="middle">Reqs+Design</text>
+        <rect x="250" y="170" width="70" height="26" rx="2" fill="none" stroke="#1c5d78"/><text x="285" y="187" text-anchor="middle">Code</text>
+        <rect x="330" y="170" width="80" height="26" rx="2" fill="none" stroke="#1c5d78"/><text x="370" y="187" text-anchor="middle">Test</text>
+        <rect x="330" y="220" width="80" height="26" rx="2" fill="none" stroke="#b5651d"/><text x="370" y="237" text-anchor="middle" fill="#b5651d">Deliver v3</text>
+        </g>
+        <text x="20" y="12" class="small">increment 1</text>
+        <text x="100" y="62" class="small">increment 2</text>
+        <text x="180" y="162" class="small">increment 3</text>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="box"><h4>Advantages</h4><ul>
+        <li>Early, working (partial) product</li>
+        <li>Easier to test &amp; manage in small pieces</li>
+        <li>Lower risk of total project failure</li>
+      </ul></div>
+      <div class="box neg"><h4>Disadvantages</h4><ul>
+        <li>Needs good upfront planning &amp; open architecture</li>
+        <li>Total cost may exceed single waterfall</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>Memorize:</b> Requirements are known upfront → just built &amp; delivered in <b>slices</b>.</div>
+  </section>
+
+  <!-- 7. Evolutionary -->
+  <section class="card" id="evolutionary">
+    <h2><span class="no">07</span> Evolutionary Model</h2>
+    <div class="sub">Requirements are NOT fully known upfront — build a version, get feedback, evolve it into the next version.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 460 200" width="440">
+        <defs>
+          <marker id="arr7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/>
+          </marker>
+        </defs>
+        <g font-size="11">
+        <circle cx="60" cy="100" r="42" fill="none" stroke="#1c5d78"/><text x="60" y="96" text-anchor="middle">Initial</text><text x="60" y="110" text-anchor="middle">Version</text>
+        <circle cx="190" cy="100" r="48" fill="none" stroke="#1c5d78"/><text x="190" y="96" text-anchor="middle">Version 2</text><text x="190" y="110" text-anchor="middle">(refined)</text>
+        <circle cx="335" cy="100" r="55" fill="none" stroke="#b5651d"/><text x="335" y="96" text-anchor="middle" fill="#b5651d">Final</text><text x="335" y="110" text-anchor="middle" fill="#b5651d">Version</text>
+        </g>
+        <line x1="102" y1="100" x2="140" y2="100" stroke="#1c5d78" marker-end="url(#arr7)"/>
+        <line x1="238" y1="100" x2="278" y2="100" stroke="#1c5d78" marker-end="url(#arr7)"/>
+        <path d="M60,58 C60,10 190,10 190,52" fill="none" stroke="#b5651d" stroke-dasharray="4 3" marker-end="url(#arr7)"/>
+        <path d="M190,52 C190,0 335,0 335,45" fill="none" stroke="#b5651d" stroke-dasharray="4 3" marker-end="url(#arr7)"/>
+        <text x="125" y="20" class="small" fill="#b5651d">feedback</text>
+        <text x="260" y="10" class="small" fill="#b5651d">feedback</text>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="box"><h4>Advantages</h4><ul>
+        <li>Handles changing / unclear requirements well</li>
+        <li>Customer feedback shapes each version</li>
+      </ul></div>
+      <div class="box neg"><h4>Disadvantages</h4><ul>
+        <li>Hard to estimate total cost &amp; time</li>
+        <li>Needs careful management, can drift in scope</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>Memorize:</b> Incremental = known reqs, sliced. Evolutionary = unclear reqs, <b>versions grow</b> via feedback.</div>
+  </section>
+
+  <!-- 8. Spiral -->
+  <section class="card" id="spiral">
+    <h2><span class="no">08</span> Spiral Model</h2>
+    <div class="sub">Risk-driven: waterfall + iterative combined. Each loop = one phase, split into 4 quadrants; radius = cost.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 460 460" width="380">
+        <defs>
+          <marker id="arr8" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/>
+          </marker>
+        </defs>
+        <!-- quadrant dividers -->
+        <line x1="230" y1="230" x2="230" y2="45" stroke="#a9bdc9" stroke-dasharray="3 4"/>
+        <line x1="230" y1="230" x2="415" y2="230" stroke="#a9bdc9" stroke-dasharray="3 4"/>
+        <line x1="230" y1="230" x2="230" y2="415" stroke="#a9bdc9" stroke-dasharray="3 4"/>
+        <line x1="230" y1="230" x2="45" y2="230" stroke="#a9bdc9" stroke-dasharray="3 4"/>
+
+        <polyline points="230.2,219.7 231.3,218.6 232.5,217.7 233.9,216.8 235.5,216.1 237.3,215.7 239.2,215.4 241.1,215.3 243.2,215.5 245.3,216.0 247.4,216.7 249.5,217.7 251.6,219.0 253.6,220.6 255.5,222.4 257.2,224.5 258.7,226.8 260.1,229.4 261.2,232.2 262.0,235.1 262.5,238.3 262.8,241.6 262.7,244.9 262.2,248.4 261.4,251.9 260.2,255.4 258.6,258.8 256.6,262.1 254.3,265.4 251.6,268.4 248.5,271.3 245.1,273.9 241.4,276.2 237.4,278.2 233.1,279.8 228.5,281.0 223.8,281.9 219.0,282.2 214.0,282.2 208.9,281.6 203.8,280.5 198.7,278.9 193.8,276.8 188.9,274.3 184.2,271.2 179.8,267.6 175.6,263.5 171.8,259.0 168.3,254.1 165.3,248.8 162.7,243.1 160.6,237.1 159.1,230.9 158.2,224.4 157.8,217.8 158.1,211.0 159.0,204.3 160.5,197.5 162.7,190.8 165.6,184.2 169.0,177.9 173.2,171.8 177.9,166.0 183.2,160.6 189.1,155.6 195.5,151.2 202.3,147.3 209.6,144.0 217.2,141.4 225.2,139.4 233.4,138.2 241.8,137.7 250.3,138.0 258.8,139.1 267.3,141.0 275.7,143.6 283.9,147.1 291.9,151.4 299.5,156.4 306.7,162.2 313.4,168.7 319.6,175.8 325.1,183.6 330.0,191.9 334.2,200.7 337.5,210.0 340.0,219.6 341.7,229.6 342.4,239.7 342.3,250.0 341.1,260.3 339.1,270.6 336.0,280.7 332.0,290.6 327.1,300.2 321.3,309.4 314.6,318.2 307.1,326.3 298.7,333.8 289.7,340.6 280.0,346.6 269.6,351.7 258.8,355.9 247.5,359.2 235.9,361.4 224.0,362.5 212.0,362.6 199.8,361.6 187.8,359.5 175.9,356.2 164.2,351.9 152.8,346.4 142.0,339.9 131.6,332.4 121.9,323.9 113.0,314.5 104.9,304.3 97.7,293.2 91.4,281.5 86.2,269.1 82.1,256.2 79.2,242.9 77.5,229.3 77.0,215.5 77.8,201.6 79.8,187.7 83.2,174.0 87.7,160.5 93.6,147.4 100.6,134.8 108.8,122.8 118.1,111.5 128.5,101.0 139.9,91.4 152.2,82.8 165.3,75.3 179.1,69.0 193.5,64.0 208.4,60.2 223.7,57.8 239.3,56.8 255.0,57.1 270.7,59.0 286.3,62.2 301.6,66.9 316.5,72.9 331.0,80.4 344.7,89.2 357.7,99.2 369.9,110.5"
+          fill="none" stroke="#1c5d78" stroke-width="2"/>
+        <line x1="369.9" y1="110.5" x2="379.7" y2="121.3" stroke="#1c5d78" stroke-width="2" marker-end="url(#arr8)"/>
+
+        <circle cx="230" cy="230" r="4" fill="#b5651d"/>
+        <text x="230" y="228" text-anchor="middle" font-size="10" fill="#b5651d">start</text>
+
+        <g font-size="11.5" font-weight="600">
+          <text x="262" y="132" text-anchor="middle">Determine Objectives,</text>
+          <text x="262" y="146" text-anchor="middle">Alternatives &amp; Constraints</text>
+
+          <text x="360" y="245" text-anchor="start">Evaluate Alternatives,</text>
+          <text x="360" y="259" text-anchor="start">Identify &amp; Resolve Risks</text>
+
+          <text x="206" y="378" text-anchor="middle">Develop &amp; Verify</text>
+          <text x="206" y="392" text-anchor="middle">Next-Level Product</text>
+
+          <text x="72" y="196" text-anchor="end">Plan</text>
+          <text x="72" y="210" text-anchor="end">Next Phase</text>
+        </g>
+        <text x="400" y="105" font-size="11" fill="#b5651d" font-weight="600">Release</text>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="box"><h4>Advantages</h4><ul>
+        <li>Strong focus on risk analysis at every loop</li>
+        <li>Good for large, complex, high-risk projects</li>
+        <li>Combines benefits of waterfall + prototyping</li>
+      </ul></div>
+      <div class="box neg"><h4>Disadvantages</h4><ul>
+        <li>Expensive — needs risk-assessment expertise</li>
+        <li>Complex to manage; not ideal for small projects</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>Memorize:</b> 4 quadrants every loop → <b>"Objectives → Risks → Build → Plan"</b>, repeat. Bigger loop = more cost.</div>
+  </section>
+
+  <!-- 9. Agile -->
+  <section class="card" id="agile">
+    <h2><span class="no">09</span> Agile Model</h2>
+    <div class="sub">A mindset/set of principles: build in short cycles, deliver working software fast, adapt to change.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 460 300" width="380">
+        <defs>
+          <marker id="arr9" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/>
+          </marker>
+        </defs>
+        <circle cx="230" cy="150" r="46" fill="none" stroke="#a9bdc9" stroke-dasharray="3 4"/>
+        <text x="230" y="146" text-anchor="middle" font-size="11" fill="#b5651d" font-weight="600">Sprint</text>
+        <text x="230" y="160" text-anchor="middle" font-size="9.5" fill="#b5651d">1–4 weeks</text>
+
+        <line x1="264.6" y1="60" x2="290.6" y2="75" stroke="#1c5d78" marker-end="url(#arr9)"/>
+        <line x1="325.3" y1="135" x2="325.3" y2="165" stroke="#1c5d78" marker-end="url(#arr9)"/>
+        <line x1="290.6" y1="225" x2="264.6" y2="240" stroke="#1c5d78" marker-end="url(#arr9)"/>
+        <line x1="195.4" y1="240" x2="169.4" y2="225" stroke="#1c5d78" marker-end="url(#arr9)"/>
+        <line x1="134.7" y1="165" x2="134.7" y2="135" stroke="#1c5d78" marker-end="url(#arr9)"/>
+        <line x1="169.4" y1="75" x2="195.4" y2="60" stroke="#1c5d78" marker-end="url(#arr9)"/>
+
+        <g font-size="12">
+        <rect x="185" y="22" width="90" height="36" rx="4" fill="#f6f8fa" stroke="#1c5d78"/><text x="230" y="45" text-anchor="middle">Plan</text>
+        <rect x="280.3" y="77" width="90" height="36" rx="4" fill="#f6f8fa" stroke="#1c5d78"/><text x="325.3" y="100" text-anchor="middle">Design</text>
+        <rect x="280.3" y="187" width="90" height="36" rx="4" fill="#f6f8fa" stroke="#1c5d78"/><text x="325.3" y="210" text-anchor="middle">Build</text>
+        <rect x="185" y="242" width="90" height="36" rx="4" fill="#f6f8fa" stroke="#1c5d78"/><text x="230" y="265" text-anchor="middle">Test</text>
+        <rect x="89.7" y="187" width="90" height="36" rx="4" fill="#f6f8fa" stroke="#1c5d78"/><text x="134.7" y="210" text-anchor="middle">Release</text>
+        <rect x="89.7" y="77" width="90" height="36" rx="4" fill="#f6f8fa" stroke="#1c5d78"/><text x="134.7" y="100" text-anchor="middle">Review</text>
+        </g>
+      </svg>
+    </div>
+
+    <div class="keyline"><b>4 Core Values (Agile Manifesto):</b> Individuals &amp; interactions <i>over</i> processes &amp; tools · Working software <i>over</i> documentation · Customer collaboration <i>over</i> contract negotiation · Responding to change <i>over</i> following a plan.</div>
+
+    <div class="grid2">
+      <div class="box"><h4>Advantages</h4><ul>
+        <li>Fast, frequent delivery of working software</li>
+        <li>Welcomes changing requirements, even late</li>
+        <li>Continuous customer &amp; team feedback</li>
+      </ul></div>
+      <div class="box neg"><h4>Disadvantages</h4><ul>
+        <li>Hard to predict final cost/time upfront</li>
+        <li>Needs highly involved, available customer</li>
+        <li>Less documentation can hurt handovers</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>Memorize:</b> Agile = <b>philosophy</b>. Scrum/Kanban/XP = <b>frameworks</b> that put Agile into practice.</div>
+  </section>
+
+  <!-- 10. Scrum -->
+  <section class="card" id="scrum">
+    <h2><span class="no">10</span> Scrum</h2>
+    <div class="sub">Most popular framework to implement Agile — organizes work into fixed-length Sprints.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 900 190" width="100%">
+        <defs>
+          <marker id="arr10" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/>
+          </marker>
+          <marker id="arr10b" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#b5651d"/>
+          </marker>
+        </defs>
+        <g font-size="11.5">
+        <rect x="10" y="65" width="110" height="42" rx="3" fill="none" stroke="#1c5d78"/><text x="65" y="82" text-anchor="middle">Product</text><text x="65" y="96" text-anchor="middle">Backlog</text>
+        <rect x="138" y="65" width="110" height="42" rx="3" fill="none" stroke="#1c5d78"/><text x="193" y="82" text-anchor="middle">Sprint</text><text x="193" y="96" text-anchor="middle">Planning</text>
+        <rect x="266" y="65" width="110" height="42" rx="3" fill="none" stroke="#1c5d78"/><text x="321" y="82" text-anchor="middle">Sprint</text><text x="321" y="96" text-anchor="middle">Backlog</text>
+        <rect x="394" y="65" width="110" height="42" rx="3" fill="none" stroke="#b5651d"/><text x="449" y="82" text-anchor="middle" fill="#b5651d">Sprint</text><text x="449" y="96" text-anchor="middle" fill="#b5651d">(2–4 wks)</text>
+        <rect x="522" y="65" width="100" height="42" rx="3" fill="none" stroke="#1c5d78"/><text x="572" y="90" text-anchor="middle">Increment</text>
+        <rect x="640" y="65" width="110" height="42" rx="3" fill="none" stroke="#1c5d78"/><text x="695" y="82" text-anchor="middle">Sprint</text><text x="695" y="96" text-anchor="middle">Review</text>
+        <rect x="768" y="65" width="122" height="42" rx="3" fill="none" stroke="#1c5d78"/><text x="829" y="82" text-anchor="middle">Sprint</text><text x="829" y="96" text-anchor="middle">Retrospective</text>
+        </g>
+
+        <line x1="120" y1="86" x2="136" y2="86" stroke="#1c5d78" marker-end="url(#arr10)"/>
+        <line x1="248" y1="86" x2="264" y2="86" stroke="#1c5d78" marker-end="url(#arr10)"/>
+        <line x1="376" y1="86" x2="392" y2="86" stroke="#1c5d78" marker-end="url(#arr10)"/>
+        <line x1="504" y1="86" x2="520" y2="86" stroke="#1c5d78" marker-end="url(#arr10)"/>
+        <line x1="622" y1="86" x2="638" y2="86" stroke="#1c5d78" marker-end="url(#arr10)"/>
+        <line x1="750" y1="86" x2="766" y2="86" stroke="#1c5d78" marker-end="url(#arr10)"/>
+
+        <!-- daily scrum loop above Sprint box -->
+        <path d="M424,63 C424,38 474,38 474,58" fill="none" stroke="#b5651d" marker-end="url(#arr10b)"/>
+        <text x="449" y="30" text-anchor="middle" font-size="10" fill="#b5651d">Daily Scrum (standup)</text>
+
+        <!-- feedback loop back to Product Backlog -->
+        <path d="M829,63 C829,10 65,10 65,63" fill="none" stroke="#b5651d" stroke-dasharray="4 3" marker-end="url(#arr10b)"/>
+        <text x="447" y="130" text-anchor="middle" font-size="10.5" fill="#b5651d">next sprint — repeat</text>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="box"><h4>3 Roles</h4><ul>
+        <li><b>Product Owner</b> — owns &amp; prioritizes backlog</li>
+        <li><b>Scrum Master</b> — removes blockers, guards process</li>
+        <li><b>Development Team</b> — builds the increment</li>
+      </ul></div>
+      <div class="box"><h4>3 Artifacts</h4><ul>
+        <li><b>Product Backlog</b> — full wish-list of features</li>
+        <li><b>Sprint Backlog</b> — items picked for this sprint</li>
+        <li><b>Increment</b> — usable output at sprint end</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>5 Events:</b> Sprint (the container) → Sprint Planning → Daily Scrum (daily, 15 min) → Sprint Review (demo to stakeholders) → Sprint Retrospective (team improves itself).</div>
+    <div class="keyline"><b>Memorize:</b> <b>3 Roles, 3 Artifacts, 5 Events</b> — Scrum is Agile's most structured framework.</div>
+  </section>
+
+  <!-- Compare -->
+  <section class="card" id="compare">
+    <h2><span class="no">⇢</span> Quick Compare Table</h2>
+    <table>
+      <tr><th>Model</th><th>Core Idea</th><th>Best For</th></tr>
+      <tr><td>Classic Waterfall</td><td>Strict linear, no backtrack</td><td>Small, fixed, well-known reqs</td></tr>
+      <tr><td>Iterative Waterfall</td><td>Linear + feedback loops</td><td>Reqs mostly stable, minor revisits</td></tr>
+      <tr><td>V-Shaped</td><td>Dev phase paired with test phase</td><td>Small critical projects, testing-heavy</td></tr>
+      <tr><td>Prototyping</td><td>Sample first, then real build</td><td>Unclear / evolving UI-heavy reqs</td></tr>
+      <tr><td>Incremental</td><td>Known reqs, delivered in slices</td><td>Large projects, need early delivery</td></tr>
+      <tr><td>Evolutionary</td><td>Unclear reqs, versions evolve</td><td>Innovative / research-driven products</td></tr>
+      <tr><td>Spiral</td><td>Risk-driven loops, 4 quadrants each</td><td>Large, complex, high-risk projects</td></tr>
+      <tr><td>Agile</td><td>Short cycles, embrace change</td><td>Fast-evolving, customer-driven products</td></tr>
+      <tr><td>Scrum</td><td>Agile via fixed Sprints + roles/events</td><td>Teams wanting a structured Agile framework</td></tr>
+    </table>
+  </section>
+
+  <div class="section-divider">Part 2 · Requirements, Design, Risk, Estimation &amp; Testing</div>
+
+  <!-- 11. Software Requirements -->
+  <section class="card" id="reqs">
+    <h2><span class="no">11</span> Software Requirements</h2>
+    <div class="sub">A requirement = a capability or condition the software must meet to satisfy a stakeholder's need.</div>
+
+    <div class="grid2">
+      <div class="box"><h4>3-Level View</h4><ul>
+        <li><b>Business requirements</b> — why the project exists (goals)</li>
+        <li><b>User requirements</b> — what the user needs to do (plain language)</li>
+        <li><b>System/functional requirements</b> — precise, detailed spec for developers</li>
+      </ul></div>
+      <div class="box"><h4>Sources of Requirements</h4><ul>
+        <li>Stakeholders &amp; end-users (interviews, surveys)</li>
+        <li>Business rules &amp; domain knowledge</li>
+        <li>Existing systems &amp; regulations/standards</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>Memorize:</b> Business → User → Functional — each level gets more <b>detailed &amp; technical</b>.</div>
+  </section>
+
+  <!-- 12. Functional / Non-functional -->
+  <section class="card" id="funreq">
+    <h2><span class="no">12</span> Functional vs Non-Functional Requirements</h2>
+    <div class="sub">Functional = WHAT the system does. Non-functional = HOW WELL it does it.</div>
+
+    <table>
+      <tr><th>Functional (FR)</th><th>Non-Functional (NFR)</th></tr>
+      <tr><td>Describes a feature / behaviour</td><td>Describes a quality attribute / constraint</td></tr>
+      <tr><td>"System shall allow login with email + password"</td><td>"Login must complete within 2 seconds"</td></tr>
+      <tr><td>"Generate monthly sales report as PDF"</td><td>"System must be available 99.9% of the time"</td></tr>
+      <tr><td>"Allow admin to add/delete products"</td><td>"Passwords must be stored encrypted (security)"</td></tr>
+      <tr><td>Verified by testing the feature directly</td><td>Verified by measuring performance/quality</td></tr>
+    </table>
+
+    <div class="box" style="margin-top:14px;"><h4>Common NFR Categories</h4><ul>
+      <li>Performance · Security · Usability · Reliability</li>
+      <li>Scalability · Availability · Maintainability · Portability</li>
+    </ul></div>
+    <div class="keyline"><b>Memorize:</b> Functional = <b>verb</b> sentences (action). Non-functional = <b>quality</b> words (fast, secure, reliable).</div>
+  </section>
+
+  <!-- 13. SRS -->
+  <section class="card" id="srs">
+    <h2><span class="no">13</span> Software Requirements Specification (SRS)</h2>
+    <div class="sub">A formal document capturing all functional &amp; non-functional requirements — the contract between client &amp; developer.</div>
+
+    <div class="grid2">
+      <div class="box"><h4>8 Characteristics of a Good SRS</h4><ul>
+        <li>Correct · Complete · Consistent</li>
+        <li>Unambiguous · Verifiable</li>
+        <li>Modifiable · Traceable · Ranked (by importance)</li>
+      </ul></div>
+      <div class="box"><h4>Typical SRS Structure (IEEE 830)</h4><ul>
+        <li>1. Introduction (purpose, scope, definitions)</li>
+        <li>2. Overall description (product perspective, users)</li>
+        <li>3. Specific requirements (functional, interface, performance)</li>
+        <li>4. Appendices / supporting info</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>Memorize:</b> SRS answers <b>"what the system must do"</b> — never <i>how</i> it's built internally.</div>
+  </section>
+
+  <!-- 14. User Requirements -->
+  <section class="card" id="userreq">
+    <h2><span class="no">14</span> User Requirements (with examples)</h2>
+    <div class="sub">High-level statements, in plain natural language, describing what the system should do for the user — no technical detail.</div>
+
+    <table>
+      <tr><th>User Requirement (plain language)</th><th>Corresponding Functional Requirement</th></tr>
+      <tr><td>"Customers should be able to search for books by title, author, or ISBN."</td><td>System shall provide a search function querying Title/Author/ISBN fields, returning results within 2 sec.</td></tr>
+      <tr><td>"I want to reset my password if I forget it."</td><td>System shall send a time-limited reset link to the registered email on request.</td></tr>
+      <tr><td>"The manager should see today's sales at a glance."</td><td>System shall render a dashboard widget showing total sales for the current date, refreshed every 5 min.</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> User requirement = what a <b>non-technical stakeholder</b> would say. Functional requirement = the <b>precise engineering translation</b> of it.</div>
+  </section>
+
+  <!-- 15. DFD Basics -->
+  <section class="card" id="dfd">
+    <h2><span class="no">15</span> Data Flow Diagram (DFD) — What &amp; How to Design</h2>
+    <div class="sub">A graphical tool showing how data moves through a system — processes, stores, entities &amp; flows. No control flow or timing.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 640 150" width="600">
+        <g font-size="12">
+          <rect x="10" y="15" width="120" height="46" fill="none" stroke="#1c5d78"/>
+          <text x="70" y="42" text-anchor="middle">External Entity</text>
+
+          <circle cx="260" cy="38" r="42" fill="none" stroke="#1c5d78"/>
+          <text x="260" y="34" text-anchor="middle">Process</text>
+          <text x="260" y="48" text-anchor="middle" font-size="10">1.0 Name</text>
+
+          <path d="M420,15 h100 v46 h-100 v-10 h100 M420,15 v10 h100" fill="none" stroke="#1c5d78"/>
+          <line x1="420" y1="25" x2="520" y2="25" stroke="#1c5d78"/>
+          <text x="470" y="48" text-anchor="middle">D1 Data Store</text>
+        </g>
+        <line x1="132" y1="38" x2="216" y2="38" stroke="#1c5d78" marker-end="url(#arrdfd)"/>
+        <line x1="302" y1="38" x2="418" y2="38" stroke="#1c5d78" marker-end="url(#arrdfd)"/>
+        <defs>
+          <marker id="arrdfd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">
+            <path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/>
+          </marker>
+        </defs>
+        <text x="174" y="30" text-anchor="middle" font-size="10" fill="#b5651d">data flow</text>
+        <text x="360" y="30" text-anchor="middle" font-size="10" fill="#b5651d">data flow</text>
+      </svg>
+    </div>
+
+    <div class="grid2">
+      <div class="box"><h4>4 Symbols</h4><ul>
+        <li><b>Rectangle</b> — External Entity (source/sink)</li>
+        <li><b>Circle</b> — Process (transforms data)</li>
+        <li><b>Open rectangle / two lines</b> — Data Store (data at rest)</li>
+        <li><b>Arrow</b> — Data Flow (data in motion)</li>
+      </ul></div>
+      <div class="box"><h4>Steps to Design a DFD</h4><ul>
+        <li>1. Identify external entities</li>
+        <li>2. Identify main processes (system functions)</li>
+        <li>3. Identify data stores</li>
+        <li>4. Connect with data flows; start at Context (Level 0), decompose further</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>Rule:</b> Data can never flow <b>entity→entity</b> or <b>entity→store</b> directly — it must always pass through a process.</div>
+  </section>
+
+  <!-- 16. DFD Levels -->
+  <section class="card" id="dfdlevels">
+    <h2><span class="no">16</span> Levels of DFD — 0, 1, 2 (Example: Food Ordering System)</h2>
+    <div class="sub">Each level decomposes a process into finer sub-processes; the picture zooms in but data in/out stays balanced.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 640 170" width="600">
+        <defs><marker id="arrlvl" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/></marker></defs>
+        <g font-size="11">
+          <rect x="10" y="65" width="110" height="42" fill="none" stroke="#1c5d78"/><text x="65" y="90" text-anchor="middle">Customer</text>
+          <circle cx="300" cy="86" r="46" fill="none" stroke="#1c5d78"/>
+          <text x="300" y="82" text-anchor="middle">0</text><text x="300" y="96" text-anchor="middle" font-size="10">Food Ordering System</text>
+          <rect x="520" y="10" width="110" height="42" fill="none" stroke="#1c5d78"/><text x="575" y="35" text-anchor="middle">Restaurant</text>
+          <rect x="520" y="120" width="110" height="42" fill="none" stroke="#1c5d78"/><text x="575" y="145" text-anchor="middle">Payment GW</text>
+        </g>
+        <line x1="120" y1="86" x2="254" y2="86" stroke="#1c5d78" marker-end="url(#arrlvl)"/>
+        <line x1="346" y1="70" x2="518" y2="35" stroke="#1c5d78" marker-end="url(#arrlvl)"/>
+        <line x1="346" y1="100" x2="518" y2="135" stroke="#1c5d78" marker-end="url(#arrlvl)"/>
+      </svg>
+    </div>
+    <div class="use" style="text-align:center;"><b>Level 0 (Context Diagram)</b> — whole system as ONE process; only external entities + major flows shown.</div>
+
+    <div class="diagram" style="margin-top:20px;">
+      <svg viewBox="0 0 700 190" width="640">
+        <defs><marker id="arrlvl1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/></marker></defs>
+        <g font-size="10.5">
+          <rect x="10" y="70" width="90" height="40" fill="none" stroke="#1c5d78"/><text x="55" y="94" text-anchor="middle">Customer</text>
+          <circle cx="185" cy="35" r="38" fill="none" stroke="#1c5d78"/><text x="185" y="32" text-anchor="middle">1.0</text><text x="185" y="44" text-anchor="middle" font-size="9">Manage Order</text>
+          <circle cx="185" cy="150" r="38" fill="none" stroke="#1c5d78"/><text x="185" y="147" text-anchor="middle">2.0</text><text x="185" y="159" text-anchor="middle" font-size="9">Process Payment</text>
+          <circle cx="380" cy="90" r="38" fill="none" stroke="#1c5d78"/><text x="380" y="87" text-anchor="middle">3.0</text><text x="380" y="99" text-anchor="middle" font-size="9">Manage Delivery</text>
+          <path d="M470,15 h90 v34 h-90 v-8 h90 M470,15 v8 h90" fill="none" stroke="#1c5d78"/><line x1="470" y1="23" x2="560" y2="23" stroke="#1c5d78"/><text x="515" y="42" text-anchor="middle" font-size="10">D1 Orders</text>
+          <path d="M470,140 h90 v34 h-90 v-8 h90 M470,140 v8 h90" fill="none" stroke="#1c5d78"/><line x1="470" y1="148" x2="560" y2="148" stroke="#1c5d78"/><text x="515" y="167" text-anchor="middle" font-size="10">D2 Menu</text>
+        </g>
+        <line x1="100" y1="80" x2="150" y2="45" stroke="#1c5d78" marker-end="url(#arrlvl1)"/>
+        <line x1="100" y1="100" x2="150" y2="140" stroke="#1c5d78" marker-end="url(#arrlvl1)"/>
+        <line x1="223" y1="35" x2="468" y2="30" stroke="#1c5d78" marker-end="url(#arrlvl1)"/>
+        <line x1="223" y1="45" x2="342" y2="80" stroke="#1c5d78" marker-end="url(#arrlvl1)"/>
+        <line x1="223" y1="150" x2="342" y2="105" stroke="#1c5d78" marker-end="url(#arrlvl1)"/>
+        <line x1="418" y1="90" x2="468" y2="150" stroke="#1c5d78" marker-end="url(#arrlvl1)"/>
+      </svg>
+    </div>
+    <div class="use" style="text-align:center;"><b>Level 1</b> — process 0 split into major sub-processes (1.0, 2.0, 3.0) with data stores.</div>
+
+    <div class="keyline" style="margin-top:16px;"><b>Level 2</b> would decompose one Level-1 bubble further — e.g. <i>2.0 Process Payment</i> → <b>2.1</b> Validate Card, <b>2.2</b> Authorize Transaction, <b>2.3</b> Generate Invoice. Go deeper only where a process is still complex.</div>
+    <div class="keyline"><b>Memorize:</b> 0 = whole system · 1 = major functions · 2 = sub-steps of one function. Numbering shows lineage (2.1 belongs to 2.0).</div>
+  </section>
+
+  <!-- 17. Logical vs Physical DFD -->
+  <section class="card" id="dfdtype">
+    <h2><span class="no">17</span> Logical vs Physical DFD</h2>
+    <div class="sub">Logical = WHAT the business does. Physical = HOW it's actually implemented (people, tech, files).</div>
+
+    <table>
+      <tr><th>Logical DFD</th><th>Physical DFD</th></tr>
+      <tr><td>Technology-independent, business-process view</td><td>Implementation-specific, shows real tools/tech</td></tr>
+      <tr><td>"Validate Customer Details"</td><td>"Java module validates input against Oracle CUSTOMER table on App Server"</td></tr>
+      <tr><td>"Store Order"</td><td>"Insert row into MySQL orders table via REST API"</td></tr>
+      <tr><td>Used early, for understanding requirements</td><td>Used later, for design &amp; implementation</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> Logical = <b>business logic</b>. Physical = <b>bits, servers, file names</b>.</div>
+  </section>
+
+  <!-- 18. Function vs Object Oriented Design -->
+  <section class="card" id="design">
+    <h2><span class="no">18</span> Function-Oriented vs Object-Oriented Design</h2>
+    <div class="sub">Two approaches to translate requirements into a software structure.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 640 190" width="600">
+        <g font-size="11">
+        <!-- structure chart (function oriented) -->
+        <rect x="40" y="10" width="130" height="34" rx="3" fill="none" stroke="#1c5d78"/><text x="105" y="32" text-anchor="middle">processPayroll()</text>
+        <rect x="10" y="90" width="110" height="34" rx="3" fill="none" stroke="#1c5d78"/><text x="65" y="112" text-anchor="middle">calcSalary()</text>
+        <rect x="140" y="90" width="110" height="34" rx="3" fill="none" stroke="#1c5d78"/><text x="195" y="112" text-anchor="middle">printReport()</text>
+        <rect x="10" y="150" width="110" height="34" rx="3" fill="none" stroke="#1c5d78"/><text x="65" y="172" text-anchor="middle">applyTax()</text>
+        <line x1="105" y1="44" x2="65" y2="88" stroke="#1c5d78"/>
+        <line x1="105" y1="44" x2="195" y2="88" stroke="#1c5d78"/>
+        <line x1="65" y1="124" x2="65" y2="148" stroke="#1c5d78"/>
+        <text x="105" y="60" text-anchor="middle" font-size="9.5" fill="#b5651d">Structure Chart (top-down)</text>
+
+        <!-- class diagram (object oriented) -->
+        <rect x="400" y="55" width="200" height="95" fill="none" stroke="#1c5d78"/>
+        <line x1="400" y1="80" x2="600" y2="80" stroke="#1c5d78"/>
+        <line x1="400" y1="115" x2="600" y2="115" stroke="#1c5d78"/>
+        <text x="500" y="72" text-anchor="middle" font-weight="700">Employee</text>
+        <text x="410" y="97" font-size="10">- name, salary, taxRate</text>
+        <text x="410" y="135" font-size="10">+ calcSalary()</text>
+        <text x="410" y="147" font-size="10">+ applyTax()</text>
+        <text x="500" y="40" text-anchor="middle" font-size="9.5" fill="#b5651d">Class Diagram (data + behaviour)</text>
+        </g>
+      </svg>
+    </div>
+
+    <table>
+      <tr><th>Function-Oriented (Structured)</th><th>Object-Oriented</th></tr>
+      <tr><td>Top-down decomposition into functions/modules</td><td>System modelled as interacting objects/classes</td></tr>
+      <tr><td>Data &amp; functions kept separate</td><td>Data + behaviour encapsulated together</td></tr>
+      <tr><td>Tools: DFD, Structure Charts</td><td>Tools: UML Class, Object, Sequence diagrams</td></tr>
+      <tr><td>Low reusability</td><td>High reusability (inheritance, polymorphism)</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> Function-oriented = <b>"what functions act on data"</b>. Object-oriented = <b>"what objects know &amp; can do"</b>.</div>
+  </section>
+
+  <!-- 19. SPM -->
+  <section class="card" id="spm">
+    <h2><span class="no">19</span> Software Project Management (SPM)</h2>
+    <div class="sub">Planning, organizing, staffing, monitoring &amp; controlling a software project to hit scope, time, cost &amp; quality goals.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 560 130" width="520">
+        <defs><marker id="arrspm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/></marker></defs>
+        <g font-size="11">
+        <rect x="10" y="45" width="90" height="38" rx="18" fill="none" stroke="#1c5d78"/><text x="55" y="68" text-anchor="middle">Initiate</text>
+        <rect x="120" y="45" width="90" height="38" rx="18" fill="none" stroke="#1c5d78"/><text x="165" y="68" text-anchor="middle">Plan</text>
+        <rect x="230" y="45" width="90" height="38" rx="18" fill="none" stroke="#1c5d78"/><text x="275" y="68" text-anchor="middle">Execute</text>
+        <rect x="340" y="45" width="120" height="38" rx="18" fill="none" stroke="#1c5d78"/><text x="400" y="68" text-anchor="middle">Monitor &amp; Control</text>
+        <rect x="480" y="45" width="70" height="38" rx="18" fill="none" stroke="#b5651d"/><text x="515" y="68" text-anchor="middle" fill="#b5651d">Close</text>
+        </g>
+        <line x1="100" y1="64" x2="118" y2="64" stroke="#1c5d78" marker-end="url(#arrspm)"/>
+        <line x1="210" y1="64" x2="228" y2="64" stroke="#1c5d78" marker-end="url(#arrspm)"/>
+        <line x1="320" y1="64" x2="338" y2="64" stroke="#1c5d78" marker-end="url(#arrspm)"/>
+        <line x1="460" y1="64" x2="478" y2="64" stroke="#1c5d78" marker-end="url(#arrspm)"/>
+        <path d="M400,45 C400,15 165,15 165,43" fill="none" stroke="#b5651d" stroke-dasharray="4 3" marker-end="url(#arrspm)"/>
+      </svg>
+    </div>
+
+    <div class="box"><h4>Key SPM Activities</h4><ul>
+      <li>Scope &amp; requirement management</li>
+      <li>Estimation (cost, effort, schedule)</li>
+      <li>Risk management &amp; quality assurance</li>
+      <li>Scheduling, staffing / team organization</li>
+      <li>Monitoring, control &amp; configuration management</li>
+    </ul></div>
+    <div class="keyline"><b>Memorize:</b> SPM is the <b>umbrella activity</b> that runs alongside every SDLC phase, start to finish.</div>
+  </section>
+
+  <!-- 20. Risk Identification -->
+  <section class="card" id="riskid">
+    <h2><span class="no">20</span> Risk Identification &amp; Reactive vs Proactive Risk Management</h2>
+    <div class="sub">Risk = an uncertain event that, if it happens, negatively affects the project.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 520 130" width="480">
+        <defs><marker id="arrrisk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/></marker></defs>
+        <g font-size="11">
+        <rect x="10" y="45" width="95" height="38" rx="4" fill="none" stroke="#1c5d78"/><text x="57" y="68" text-anchor="middle">Identify</text>
+        <rect x="130" y="45" width="95" height="38" rx="4" fill="none" stroke="#1c5d78"/><text x="177" y="68" text-anchor="middle">Analyze</text>
+        <rect x="250" y="45" width="95" height="38" rx="4" fill="none" stroke="#1c5d78"/><text x="297" y="68" text-anchor="middle">Plan</text>
+        <rect x="370" y="45" width="140" height="38" rx="4" fill="none" stroke="#1c5d78"/><text x="440" y="68" text-anchor="middle">Monitor &amp; Control</text>
+        </g>
+        <line x1="105" y1="64" x2="128" y2="64" stroke="#1c5d78" marker-end="url(#arrrisk)"/>
+        <line x1="225" y1="64" x2="248" y2="64" stroke="#1c5d78" marker-end="url(#arrrisk)"/>
+        <line x1="345" y1="64" x2="368" y2="64" stroke="#1c5d78" marker-end="url(#arrrisk)"/>
+        <path d="M440,45 C440,15 57,15 57,43" fill="none" stroke="#b5651d" stroke-dasharray="4 3" marker-end="url(#arrrisk)"/>
+      </svg>
+    </div>
+
+    <div class="box"><h4>Risk Categories</h4><ul>
+      <li><b>Project risks</b> — schedule, budget, resources, staff turnover</li>
+      <li><b>Technical risks</b> — design flaws, implementation, interfacing</li>
+      <li><b>Business risks</b> — market shift, losing budget/priority, strategy change</li>
+    </ul></div>
+
+    <table>
+      <tr><th>Reactive Risk Management</th><th>Proactive Risk Management</th></tr>
+      <tr><td>"Fire-fighting" — act only after a risk becomes a real problem</td><td>Identify &amp; plan mitigation before the risk occurs</td></tr>
+      <tr><td>No monitoring until crisis hits</td><td>Continuous monitoring of risk indicators</td></tr>
+      <tr><td>Higher cost, higher stress</td><td>Lower cost, controlled response</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> Reactive = <b>react after the fire starts</b>. Proactive = <b>fire drill before it happens</b>.</div>
+  </section>
+
+  <!-- 21. Risk Assessment -->
+  <section class="card" id="riskassess">
+    <h2><span class="no">21</span> Risk Assessment (with example)</h2>
+    <div class="sub">Ranks identified risks by severity so the team focuses on what matters most.</div>
+
+    <div class="calc">Risk Exposure &nbsp;<span class="r">RE = P × C</span><br>
+      <span class="r">P</span> = probability the risk occurs (0–1) &nbsp;|&nbsp; <span class="r">C</span> = cost/loss if it occurs</div>
+
+    <table>
+      <tr><th>Risk</th><th>P</th><th>C (days lost)</th><th>RE = P×C</th></tr>
+      <tr><td>Requirements keep changing</td><td>0.6</td><td>8</td><td class="ans">4.8</td></tr>
+      <tr><td>Key developer leaves</td><td>0.3</td><td>15</td><td class="ans">4.5</td></tr>
+      <tr><td>Server crash</td><td>0.1</td><td>20</td><td class="ans">2.0</td></tr>
+    </table>
+    <div class="keyline"><b>Result:</b> Rank by RE → Requirements change (4.8) &gt; Key dev leaves (4.5) &gt; Server crash (2.0). Tackle the highest RE first.</div>
+  </section>
+
+  <!-- 22. Risk Control vs Mitigation -->
+  <section class="card" id="riskctrl">
+    <h2><span class="no">22</span> Risk Control vs Risk Mitigation</h2>
+    <div class="sub">Mitigation acts BEFORE a risk occurs. Control is the ongoing process of watching &amp; responding throughout the project.</div>
+
+    <table>
+      <tr><th>Risk Mitigation</th><th>Risk Control</th></tr>
+      <tr><td>Proactive step taken in advance to reduce probability/impact</td><td>Ongoing monitoring + executing contingency if risk occurs</td></tr>
+      <tr><td>Eg: cross-train team members so "key person leaves" hurts less</td><td>Eg: weekly risk review; if the person actually leaves, execute the pre-planned hiring contingency</td></tr>
+      <tr><td>One-time preventive action</td><td>Continuous activity across the project</td></tr>
+    </table>
+
+    <div class="box"><h4>4 Risk Control Strategies</h4><ul>
+      <li><b>Avoid</b> — remove the risk's cause entirely</li>
+      <li><b>Mitigate</b> — reduce probability or impact</li>
+      <li><b>Transfer</b> — shift risk to a third party (insurance, outsourcing)</li>
+      <li><b>Accept</b> — acknowledge and absorb it if cost of handling &gt; cost of risk</li>
+    </ul></div>
+    <div class="keyline"><b>Memorize:</b> Mitigation = <b>one action, before</b>. Control = <b>umbrella process, during</b> (mitigation is one tool inside it).</div>
+  </section>
+
+  <!-- 23. COCOMO -->
+  <section class="card" id="cocomo">
+    <h2><span class="no">23</span> COCOMO — Basic &amp; Intermediate (with numerical)</h2>
+    <div class="sub">COnstructive COst MOdel — estimates effort &amp; time from estimated project size (KLOC).</div>
+
+    <div class="calc">Basic: &nbsp;<span class="r">E = a × (KLOC)^b</span> person-months &nbsp;&nbsp; <span class="r">T = c × (E)^d</span> months</div>
+
+    <table>
+      <tr><th>Project Type</th><th>a</th><th>b</th><th>c</th><th>d</th></tr>
+      <tr><td>Organic (small, familiar)</td><td>2.4</td><td>1.05</td><td>2.5</td><td>0.38</td></tr>
+      <tr><td>Semi-detached (medium)</td><td>3.0</td><td>1.12</td><td>2.5</td><td>0.35</td></tr>
+      <tr><td>Embedded (complex, rigid)</td><td>3.6</td><td>1.20</td><td>2.5</td><td>0.32</td></tr>
+    </table>
+
+    <div class="calc">
+      <b>Numerical (Basic, Organic, 32 KLOC):</b><br>
+      E = 2.4 × 32<sup>1.05</sup> = 2.4 × 38.05 = <span class="ans">91.3 person-months</span><br>
+      T = 2.5 × (91.3)<sup>0.38</sup> = 2.5 × 5.56 = <span class="ans">13.9 months</span><br>
+      People needed = E / T = 91.3 / 13.9 ≈ <span class="ans">7 people</span>
+    </div>
+
+    <div class="keyline"><b>Intermediate COCOMO</b> adds an <b>Effort Adjustment Factor (EAF)</b> from 15 cost drivers (e.g. reliability, complexity, experience) — each rated Very Low→Extra High with a multiplier; EAF = product of all 15.</div>
+    <div class="calc">E = a × (KLOC)^b × EAF &nbsp;(coefficients: Organic a=3.2, b=1.05)<br>
+      <b>Numerical:</b> 32 KLOC, EAF = 1.2 →<br>
+      E = 3.2 × 38.05 × 1.2 = <span class="ans">146.1 person-months</span>
+    </div>
+    <div class="keyline"><b>Memorize:</b> Basic = size only. Intermediate = size <b>× EAF</b> (15 cost drivers). Detailed COCOMO further adjusts per phase/module.</div>
+  </section>
+
+  <!-- 24. CPM / PERT -->
+  <section class="card" id="cpm">
+    <h2><span class="no">24</span> CPM &amp; PERT — Numerical</h2>
+    <div class="sub">Network technique to find the shortest possible project duration = the Critical Path (longest chain, zero slack).</div>
+
+    <table>
+      <tr><th>Activity</th><th>Predecessor</th><th>Duration (days)</th></tr>
+      <tr><td>A</td><td>—</td><td>3</td></tr>
+      <tr><td>B</td><td>—</td><td>4</td></tr>
+      <tr><td>C</td><td>A</td><td>2</td></tr>
+      <tr><td>D</td><td>A</td><td>5</td></tr>
+      <tr><td>E</td><td>B, C</td><td>1</td></tr>
+      <tr><td>F</td><td>D, E</td><td>6</td></tr>
+    </table>
+
+    <div class="diagram">
+      <svg viewBox="0 0 560 220" width="500">
+        <defs><marker id="arrcpm" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/></marker></defs>
+        <g font-size="12">
+        <circle cx="30" cy="110" r="24" fill="none" stroke="#1c5d78"/><text x="30" y="115" text-anchor="middle">St</text>
+        <circle cx="180" cy="60" r="24" fill="none" stroke="#b5651d"/><text x="180" y="65" text-anchor="middle" fill="#b5651d">A</text>
+        <circle cx="330" cy="30" r="22" fill="none" stroke="#1c5d78"/><text x="330" y="35" text-anchor="middle">C</text>
+        <circle cx="330" cy="150" r="24" fill="none" stroke="#b5651d"/><text x="330" y="155" text-anchor="middle" fill="#b5651d">D</text>
+        <circle cx="180" cy="170" r="22" fill="none" stroke="#1c5d78"/><text x="180" y="175" text-anchor="middle">B</text>
+        <circle cx="440" cy="90" r="22" fill="none" stroke="#1c5d78"/><text x="440" y="95" text-anchor="middle">E</text>
+        <circle cx="510" cy="130" r="24" fill="none" stroke="#b5651d"/><text x="510" y="135" text-anchor="middle" fill="#b5651d">F</text>
+        </g>
+        <line x1="52" y1="100" x2="158" y2="68" stroke="#b5651d" stroke-width="2" marker-end="url(#arrcpm)"/>
+        <line x1="52" y1="120" x2="160" y2="162" stroke="#1c5d78" marker-end="url(#arrcpm)"/>
+        <line x1="202" y1="52" x2="310" y2="35" stroke="#1c5d78" marker-end="url(#arrcpm)"/>
+        <line x1="196" y1="80" x2="316" y2="138" stroke="#b5651d" stroke-width="2" marker-end="url(#arrcpm)"/>
+        <line x1="200" y1="165" x2="422" y2="100" stroke="#1c5d78" marker-end="url(#arrcpm)"/>
+        <line x1="350" y1="42" x2="425" y2="80" stroke="#1c5d78" marker-end="url(#arrcpm)"/>
+        <line x1="352" y1="145" x2="492" y2="132" stroke="#b5651d" stroke-width="2" marker-end="url(#arrcpm)"/>
+        <line x1="460" y1="98" x2="490" y2="120" stroke="#1c5d78" marker-end="url(#arrcpm)"/>
+      </svg>
+    </div>
+    <div class="use" style="text-align:center;">Amber = critical path <b>A → D → F</b></div>
+
+    <div class="calc">
+      Path A-D-F = 3+5+6 = <span class="ans">14 days (longest → critical)</span><br>
+      Path A-C-E-F = 3+2+1+6 = 12 days<br>
+      Path B-E-F = 4+1+6 = 11 days<br>
+      <span class="r">Slack (LS−ES) = 0 only along A, D, F</span> — confirms critical path.
+    </div>
+
+    <div class="keyline"><b>PERT</b> uses 3 estimates per activity: <span class="r">te = (o + 4m + p) / 6</span>, variance <span class="r">σ² = ((p−o)/6)²</span></div>
+    <div class="calc">
+      A (o=1,m=3,p=5): te=3, σ²=0.444 &nbsp;|&nbsp; D (o=3,m=5,p=7): te=5, σ²=0.444 &nbsp;|&nbsp; F (o=4,m=6,p=8): te=6, σ²=0.444<br>
+      Project te = 3+5+6 = <span class="ans">14 days</span> &nbsp; Total variance = 0.444×3 = 1.33 → SD = 1.15<br>
+      P(finish ≤ 16 days): Z = (16−14)/1.15 = 1.73 → <span class="ans">≈ 95.8% probability</span>
+    </div>
+    <div class="keyline"><b>Memorize:</b> CPM = one duration (deterministic). PERT = 3 durations (probabilistic) → same network, added uncertainty.</div>
+  </section>
+
+  <!-- 25. Verification vs Validation -->
+  <section class="card" id="vv">
+    <h2><span class="no">25</span> Verification vs Validation</h2>
+    <div class="sub">Verification: "Are we building the product right?" Validation: "Are we building the right product?"</div>
+
+    <table>
+      <tr><th>Verification</th><th>Validation</th></tr>
+      <tr><td>Checks work-products against specifications</td><td>Checks the final system against user needs</td></tr>
+      <tr><td>Static — reviews, walkthroughs, inspections</td><td>Dynamic — actually executing/running the software</td></tr>
+      <tr><td>Done throughout the SDLC</td><td>Done mainly after building, at delivery</td></tr>
+      <tr><td>Eg: peer-review the SRS document</td><td>Eg: acceptance testing with real end-users</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> Verification = <b>documents &amp; design</b> (no code running). Validation = <b>running code</b> in front of the user.</div>
+  </section>
+
+  <!-- 26. Testing types & levels -->
+  <section class="card" id="testing">
+    <h2><span class="no">26</span> Types &amp; Levels of Testing</h2>
+    <div class="sub">Types = the technique used. Levels = the stage/scope at which testing happens.</div>
+
+    <div class="grid2">
+      <div class="box"><h4>By Technique</h4><ul>
+        <li><b>Black-box</b> — test functionality, no code knowledge</li>
+        <li><b>White-box</b> — test internal logic/code paths</li>
+        <li><b>Grey-box</b> — partial knowledge, mix of both</li>
+      </ul></div>
+      <div class="box"><h4>By Purpose</h4><ul>
+        <li>Smoke · Sanity · Regression</li>
+        <li>Performance / Load / Stress</li>
+        <li>Security · Usability · Compatibility</li>
+      </ul></div>
+    </div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 460 190" width="380">
+        <g font-size="11">
+        <polygon points="230,10 275,55 185,55" fill="none" stroke="#1c5d78"/><text x="230" y="38" text-anchor="middle">Acceptance</text>
+        <polygon points="185,55 275,55 300,100 160,100" fill="none" stroke="#1c5d78"/><text x="230" y="82" text-anchor="middle">System</text>
+        <polygon points="160,100 300,100 325,145 135,145" fill="none" stroke="#1c5d78"/><text x="230" y="127" text-anchor="middle">Integration</text>
+        <polygon points="135,145 325,145 350,185 110,185" fill="none" stroke="#b5651d"/><text x="230" y="170" text-anchor="middle" fill="#b5651d">Unit</text>
+        </g>
+      </svg>
+    </div>
+    <div class="use" style="text-align:center;"><b>Levels of Testing</b> — Unit → Integration → System → Acceptance (widest at the base = most frequent).</div>
+    <div class="keyline"><b>Memorize:</b> "<b>U-I-S-A</b>" — Unit tests one module, Integration checks module links, System tests the whole app, Acceptance confirms it meets user needs.</div>
+  </section>
+
+  <!-- 27. Error Seeding -->
+  <section class="card" id="errorseed">
+    <h2><span class="no">27</span> Error Seeding (with numerical)</h2>
+    <div class="sub">Estimate how many real bugs remain by deliberately planting known "fake" bugs and seeing how many get caught.</div>
+
+    <div class="calc">
+      Let &nbsp;S&nbsp; = total seeded (artificial) errors inserted<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;n<sub>s</sub> = seeded errors found during testing<br>
+      &nbsp;&nbsp;&nbsp;&nbsp;n<sub>r</sub> = real errors found during testing<br><br>
+      <span class="r">Total actual errors, N = (n<sub>r</sub> × S) / n<sub>s</sub></span><br>
+      <span class="r">Remaining real errors = N − n<sub>r</sub></span>
+    </div>
+
+    <div class="calc">
+      <b>Numerical:</b> 20 seeded errors (S=20). Testing finds 15 of the seeded ones (n<sub>s</sub>=15) and 6 real bugs (n<sub>r</sub>=6).<br>
+      N = (6 × 20) / 15 = <span class="ans">8 total actual errors estimated</span><br>
+      Remaining undetected = 8 − 6 = <span class="ans">2 real errors still hiding</span>
+    </div>
+    <div class="keyline"><b>Assumption:</b> Testing finds seeded &amp; real errors with the <b>same effectiveness</b> — that's what makes the ratio valid.</div>
+    <div class="keyline"><b>Memorize:</b> "Seed known bugs → see what fraction is caught → apply that same fraction to estimate real bugs."</div>
+  </section>
+
+</div>
+
+<div class="foot">— End of Notes · Part 1 (SDLC Models) + Part 2 (Requirements, Design, Risk, Estimation &amp; Testing) —</div>
+
+</body>
+</html>
