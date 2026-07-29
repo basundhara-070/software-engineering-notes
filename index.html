@@ -155,6 +155,48 @@
 
   .foot{text-align:center;color:var(--muted);font-size:12px;margin-top:50px;font-family:'IBM Plex Mono',monospace;}
 
+  /* SIDEBAR */
+  .sidebar{
+    position:fixed; top:0; left:0; bottom:0; width:270px;
+    background:var(--card); border-right:1px solid var(--border);
+    overflow-y:auto; padding:20px 14px 40px; z-index:30;
+  }
+  .sb-title{
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:16px;
+    color:var(--text); margin:4px 4px 18px;
+  }
+  .sb-title span{display:block; font-weight:400; font-size:11px; color:var(--muted); letter-spacing:1px; text-transform:uppercase; margin-top:2px;}
+  .sb-group{
+    font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:1.5px; text-transform:uppercase;
+    color:var(--accent); margin:20px 6px 6px; opacity:0.9;
+  }
+  .sidebar a{
+    display:block; padding:6px 8px; margin:1px 0; border-radius:3px;
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; color:var(--line);
+    text-decoration:none; line-height:1.4;
+  }
+  .sidebar a:hover{background:var(--bg2);}
+  .main-content{ margin-left:270px; }
+
+  .sidebar-toggle{
+    display:none; position:fixed; top:14px; left:14px; z-index:40;
+    width:42px; height:42px; align-items:center; justify-content:center;
+    background:var(--card); border:1px solid var(--border); border-radius:6px;
+    font-size:18px; color:var(--text); cursor:pointer;
+    box-shadow:0 1px 4px rgba(28,58,82,0.15);
+  }
+  .sidebar-overlay{
+    display:none; position:fixed; inset:0; background:rgba(21,42,58,0.35); z-index:25;
+  }
+  .sidebar-overlay.show{display:block;}
+
+  @media (max-width:900px){
+    .sidebar{ transform:translateX(-100%); transition:transform .25s ease; box-shadow:2px 0 14px rgba(0,0,0,0.15); }
+    .sidebar.open{ transform:translateX(0); }
+    .main-content{ margin-left:0; }
+    .sidebar-toggle{ display:flex; }
+  }
+
   .calc{
     background:var(--bg2);
     border:1px solid var(--border);
@@ -182,13 +224,11 @@
 </head>
 <body>
 
-<div class="hero">
-  <div class="tag">Software Engineering Notes</div>
-  <h1>SDLC <span>Models</span></h1>
-  <p>Blueprint-style revision notes — definitions, diagrams &amp; quick recall points.</p>
-</div>
-
-<div class="toc">
+<button class="sidebar-toggle" id="sidebarToggle" aria-label="Toggle menu">&#9776;</button>
+<div class="sidebar-overlay" id="sidebarOverlay"></div>
+<nav class="sidebar" id="sidebar">
+  <div class="sb-title">SE Notes<span>Software Engineering</span></div>
+  <div class="sb-group">Part 1 &middot; SDLC Models</div>
   <a href="#sdlc">01 SDLC</a>
   <a href="#waterfall">02 Classic Waterfall</a>
   <a href="#iterwaterfall">03 Iterative Waterfall</a>
@@ -200,8 +240,7 @@
   <a href="#agile">09 Agile</a>
   <a href="#scrum">10 Scrum</a>
   <a href="#compare">⇢ Quick Compare</a>
-</div>
-<div class="toc">
+  <div class="sb-group">Part 2 &middot; Requirements, Design, Risk, Estimation</div>
   <a href="#reqs">11 Requirements</a>
   <a href="#funreq">12 Functional/Non-func</a>
   <a href="#srs">13 SRS</a>
@@ -219,8 +258,7 @@
   <a href="#vv">25 Verification vs Validation</a>
   <a href="#testing">26 Testing Types/Levels</a>
   <a href="#errorseed">27 Error Seeding</a>
-</div>
-<div class="toc">
+  <div class="sb-group">Part 3 &middot; Complexity, Testing, Maintenance &amp; UML</div>
   <a href="#cycloc">28 Cyclomatic Complexity</a>
   <a href="#cohcoup">29 Cohesion &amp; Coupling</a>
   <a href="#unittest">30 Unit Testing</a>
@@ -251,7 +289,15 @@
   <a href="#fpa">55 Function Point Analysis</a>
   <a href="#fpcalc">56 FP Calculation Numerical</a>
   <a href="#aggcomp">57 Aggregation vs Composition</a>
+</nav>
+
+<div class="main-content">
+<div class="hero">
+  <div class="tag">Software Engineering Notes</div>
+  <h1>SDLC <span>Models</span></h1>
+  <p>Blueprint-style revision notes — definitions, diagrams &amp; quick recall points.</p>
 </div>
+
 
 <div class="wrap">
 
@@ -1900,5 +1946,19 @@
 
 <div class="foot">— End of Notes · Part 1 (SDLC Models) · Part 2 (Requirements, Design, Risk, Estimation &amp; Testing) · Part 3 (Complexity, Testing Deep-Dive, Maintenance &amp; UML) —</div>
 
+</div>
+
+<script>
+  const sidebar = document.getElementById('sidebar');
+  const toggle = document.getElementById('sidebarToggle');
+  const overlay = document.getElementById('sidebarOverlay');
+  function closeSidebar(){ sidebar.classList.remove('open'); overlay.classList.remove('show'); }
+  toggle.addEventListener('click', () => {
+    sidebar.classList.toggle('open');
+    overlay.classList.toggle('show');
+  });
+  overlay.addEventListener('click', closeSidebar);
+  sidebar.querySelectorAll('a').forEach(a => a.addEventListener('click', closeSidebar));
+</script>
 </body>
 </html>
