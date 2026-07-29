@@ -220,6 +220,38 @@
   <a href="#testing">26 Testing Types/Levels</a>
   <a href="#errorseed">27 Error Seeding</a>
 </div>
+<div class="toc">
+  <a href="#cycloc">28 Cyclomatic Complexity</a>
+  <a href="#cohcoup">29 Cohesion &amp; Coupling</a>
+  <a href="#unittest">30 Unit Testing</a>
+  <a href="#inttest">31 Integration Testing</a>
+  <a href="#systest">32 System Testing</a>
+  <a href="#systypes">33 Types of System Testing</a>
+  <a href="#wbtest">34 White Box Testing</a>
+  <a href="#wbvsbb">35 White vs Black Box</a>
+  <a href="#stmtcov">36 Statement Coverage</a>
+  <a href="#condcov">37 Condition Coverage</a>
+  <a href="#dataflow">38 Data Flow Testing</a>
+  <a href="#bvt">39 Boundary Value Testing</a>
+  <a href="#maint">40 Maintenance Types</a>
+  <a href="#mtbfmttr">41 MTBF vs MTTR</a>
+  <a href="#reveng">42 Reverse Engineering</a>
+  <a href="#case">43 CASE Tools</a>
+  <a href="#perftest">44 Performance Testing</a>
+  <a href="#regtest">45 Regression Testing</a>
+  <a href="#uml">46 Intro to UML</a>
+  <a href="#usecase">47 Use Case Diagram</a>
+  <a href="#seqdiag">48 Sequence Diagram</a>
+  <a href="#actdiag">49 Activity Diagram</a>
+  <a href="#classbank">50 Class Diagram (Banking)</a>
+  <a href="#classott">51 Class Diagram (OTT)</a>
+  <a href="#objdiag">52 Object Diagram</a>
+  <a href="#rad">53 RAD Model</a>
+  <a href="#fpvsloc">54 FP vs LOC</a>
+  <a href="#fpa">55 Function Point Analysis</a>
+  <a href="#fpcalc">56 FP Calculation Numerical</a>
+  <a href="#aggcomp">57 Aggregation vs Composition</a>
+</div>
 
 <div class="wrap">
 
@@ -1211,9 +1243,662 @@
     <div class="keyline"><b>Memorize:</b> "Seed known bugs → see what fraction is caught → apply that same fraction to estimate real bugs."</div>
   </section>
 
+  <div class="section-divider">Part 3 · Complexity, Testing Deep-Dive, Maintenance &amp; UML</div>
+
+  <!-- 28. Cyclomatic Complexity -->
+  <section class="card" id="cycloc">
+    <h2><span class="no">28</span> Cyclomatic Complexity</h2>
+    <div class="sub">McCabe's metric — counts the number of linearly independent paths through code (= minimum test cases needed).</div>
+
+    <div class="calc">V(G) = E − N + 2P &nbsp;&nbsp;<span class="r">(E=edges, N=nodes, P=connected components, usually 1)</span><br>
+    or simply: <span class="r">V(G) = (number of decision/predicate nodes) + 1</span></div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 400 280" width="320">
+        <defs><marker id="arrcc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/></marker></defs>
+        <g font-size="12">
+        <circle cx="200" cy="25" r="20" fill="none" stroke="#1c5d78"/><text x="200" y="30" text-anchor="middle">1</text>
+        <circle cx="200" cy="85" r="20" fill="none" stroke="#b5651d"/><text x="200" y="90" text-anchor="middle" fill="#b5651d">2</text>
+        <circle cx="100" cy="150" r="20" fill="none" stroke="#1c5d78"/><text x="100" y="155" text-anchor="middle">3</text>
+        <circle cx="300" cy="150" r="20" fill="none" stroke="#1c5d78"/><text x="300" y="155" text-anchor="middle">5</text>
+        <circle cx="200" cy="215" r="20" fill="none" stroke="#1c5d78"/><text x="200" y="220" text-anchor="middle">6</text>
+        <circle cx="200" cy="265" r="18" fill="none" stroke="#1c5d78"/><text x="200" y="270" text-anchor="middle">7</text>
+        </g>
+        <line x1="200" y1="45" x2="200" y2="63" stroke="#1c5d78" marker-end="url(#arrcc)"/>
+        <line x1="185" y1="99" x2="115" y2="133" stroke="#1c5d78" marker-end="url(#arrcc)"/>
+        <line x1="215" y1="99" x2="285" y2="133" stroke="#1c5d78" marker-end="url(#arrcc)"/>
+        <line x1="112" y1="168" x2="185" y2="203" stroke="#1c5d78" marker-end="url(#arrcc)"/>
+        <line x1="288" y1="168" x2="215" y2="203" stroke="#1c5d78" marker-end="url(#arrcc)"/>
+        <line x1="200" y1="233" x2="200" y2="247" stroke="#1c5d78" marker-end="url(#arrcc)"/>
+        <text x="240" y="120" font-size="10" fill="#b5651d">if (a &gt; b)</text>
+        <text x="45" y="105" font-size="9.5">max=a</text>
+        <text x="315" y="105" font-size="9.5">max=b</text>
+      </svg>
+    </div>
+
+    <div class="calc">
+      Nodes N=6 &nbsp;(1,2,3,5,6,7) &nbsp;&nbsp; Edges E=6 &nbsp;&nbsp; P=1<br>
+      V(G) = 6 − 6 + 2(1) = <span class="ans">2</span><br>
+      Independent paths: <span class="r">1-2-3-6-7</span> (a&gt;b true) and <span class="r">1-2-5-6-7</span> (a&gt;b false) → 2 test cases needed.
+    </div>
+    <div class="keyline"><b>Memorize:</b> Complexity = <b>number of decisions + 1</b>. Higher V(G) → harder to test/maintain → consider refactoring if V(G) &gt; 10.</div>
+  </section>
+
+  <!-- 29. Cohesion & Coupling -->
+  <section class="card" id="cohcoup">
+    <h2><span class="no">29</span> Cohesion &amp; Coupling</h2>
+    <div class="sub">Goal of good design: <b>High Cohesion, Low Coupling</b>.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 600 220" width="560">
+        <defs><marker id="arrcohc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#a9bdc9"/></marker></defs>
+        <g font-size="9.5">
+        <text x="10" y="15" fill="#b5651d">Cohesion (worse → better)</text>
+        <rect x="10" y="25" width="78" height="34" fill="none" stroke="#1c5d78"/><text x="49" y="45" text-anchor="middle">Coincidental</text>
+        <rect x="93" y="25" width="78" height="34" fill="none" stroke="#1c5d78"/><text x="132" y="45" text-anchor="middle">Logical</text>
+        <rect x="176" y="25" width="78" height="34" fill="none" stroke="#1c5d78"/><text x="215" y="45" text-anchor="middle">Temporal</text>
+        <rect x="259" y="25" width="78" height="34" fill="none" stroke="#1c5d78"/><text x="298" y="45" text-anchor="middle">Procedural</text>
+        <rect x="342" y="25" width="90" height="34" fill="none" stroke="#1c5d78"/><text x="387" y="45" text-anchor="middle">Communic.</text>
+        <rect x="437" y="25" width="78" height="34" fill="none" stroke="#1c5d78"/><text x="476" y="45" text-anchor="middle">Sequential</text>
+        <rect x="520" y="25" width="78" height="34" fill="none" stroke="#b5651d" stroke-width="2"/><text x="559" y="45" text-anchor="middle" fill="#b5651d">Functional</text>
+        </g>
+        <line x1="10" y1="70" x2="598" y2="70" stroke="#a9bdc9" marker-end="url(#arrcohc)"/>
+
+        <g font-size="9.5">
+        <text x="10" y="115" fill="#b5651d">Coupling (worse → better)</text>
+        <rect x="10" y="125" width="90" height="34" fill="none" stroke="#1c5d78"/><text x="55" y="145" text-anchor="middle">Content</text>
+        <rect x="103" y="125" width="90" height="34" fill="none" stroke="#1c5d78"/><text x="148" y="145" text-anchor="middle">Common</text>
+        <rect x="196" y="125" width="90" height="34" fill="none" stroke="#1c5d78"/><text x="241" y="145" text-anchor="middle">External</text>
+        <rect x="289" y="125" width="90" height="34" fill="none" stroke="#1c5d78"/><text x="334" y="145" text-anchor="middle">Control</text>
+        <rect x="382" y="125" width="90" height="34" fill="none" stroke="#1c5d78"/><text x="427" y="145" text-anchor="middle">Stamp</text>
+        <rect x="475" y="125" width="90" height="34" fill="none" stroke="#b5651d" stroke-width="2"/><text x="520" y="145" text-anchor="middle" fill="#b5651d">Data</text>
+        </g>
+        <line x1="10" y1="170" x2="565" y2="170" stroke="#a9bdc9" marker-end="url(#arrcohc)"/>
+        <text x="565" y="195" font-size="10" fill="#5b7285">→ best</text>
+      </svg>
+    </div>
+
+    <table>
+      <tr><th>Term</th><th>Meaning</th><th>Want</th></tr>
+      <tr><td>Cohesion</td><td>How closely related the responsibilities <i>inside one module</i> are</td><td>High</td></tr>
+      <tr><td>Coupling</td><td>How much <i>one module depends on</i> another</td><td>Low</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> "A good module minds its <b>own business</b> (high cohesion) and <b>talks to others as little as possible</b> (low coupling)."</div>
+  </section>
+
+  <!-- 30. Unit Testing -->
+  <section class="card" id="unittest">
+    <h2><span class="no">30</span> Unit Testing (with examples)</h2>
+    <div class="sub">Testing the smallest testable piece (function/method/class) in isolation — done by developers, white-box style.</div>
+
+    <div class="box"><h4>Example</h4><ul>
+      <li>Function: <code>add(a, b)</code></li>
+      <li>Test 1: <code>add(2, 3) → expect 5</code></li>
+      <li>Test 2: <code>add(-1, 1) → expect 0</code></li>
+      <li>Test 3: <code>add(0, 0) → expect 0</code></li>
+    </ul></div>
+    <div class="grid2">
+      <div class="box"><h4>Key Points</h4><ul>
+        <li>Uses <b>stubs</b> (fake called-modules) &amp; <b>drivers</b> (fake calling-modules)</li>
+        <li>Fast, isolated, run constantly during development</li>
+      </ul></div>
+      <div class="box"><h4>Common Tools</h4><ul>
+        <li>JUnit (Java) · NUnit (.NET) · PyTest (Python)</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>Memorize:</b> Smallest scope, done <b>first</b>, done by <b>developers</b>.</div>
+  </section>
+
+  <!-- 31. Integration Testing -->
+  <section class="card" id="inttest">
+    <h2><span class="no">31</span> Integration Testing (with examples)</h2>
+    <div class="sub">Tests how integrated modules work <i>together</i> — catches interface &amp; data-passing bugs.</div>
+
+    <table>
+      <tr><th>Approach</th><th>How it works</th></tr>
+      <tr><td>Big Bang</td><td>Integrate all modules at once, then test</td></tr>
+      <tr><td>Top-down</td><td>Test from top module downward, using <b>stubs</b> for missing lower modules</td></tr>
+      <tr><td>Bottom-up</td><td>Test from lower modules upward, using <b>drivers</b> for missing upper modules</td></tr>
+      <tr><td>Sandwich/Hybrid</td><td>Top-down + bottom-up combined</td></tr>
+    </table>
+    <div class="keyline"><b>Example:</b> "Login" module integrated with "Database" module — verify entered credentials are actually checked against real DB records, not just validated locally.</div>
+    <div class="keyline"><b>Memorize:</b> Unit tests one brick; Integration tests <b>the joints</b> between bricks.</div>
+  </section>
+
+  <!-- 32. System Testing -->
+  <section class="card" id="systest">
+    <h2><span class="no">32</span> System Testing (with examples)</h2>
+    <div class="sub">Testing the complete, fully-integrated system against the full requirements — done by an independent test team, black-box style.</div>
+
+    <div class="keyline"><b>Example:</b> Testing an entire e-commerce site end-to-end — browse products → add to cart → checkout → pay → receive order confirmation — as one continuous real-world flow.</div>
+    <div class="box"><h4>Key Points</h4><ul>
+      <li>Entire application, not individual modules</li>
+      <li>Checks against SRS, not internal code</li>
+      <li>Last technical testing stage before Acceptance Testing</li>
+    </ul></div>
+    <div class="keyline"><b>Memorize:</b> System Testing = "does the <b>whole product</b> work as promised?"</div>
+  </section>
+
+  <!-- 33. Types of System Testing -->
+  <section class="card" id="systypes">
+    <h2><span class="no">33</span> Types of System Testing</h2>
+    <table>
+      <tr><th>Type</th><th>Checks</th><th>Example</th></tr>
+      <tr><td>Functional</td><td>Features work per spec</td><td>Checkout completes an order</td></tr>
+      <tr><td>Performance</td><td>Speed &amp; responsiveness</td><td>Page loads under 2 sec</td></tr>
+      <tr><td>Load</td><td>Behaviour at expected user load</td><td>10,000 users browsing at once</td></tr>
+      <tr><td>Stress</td><td>Behaviour beyond capacity</td><td>100,000 users — does it crash gracefully?</td></tr>
+      <tr><td>Security</td><td>Data &amp; access protection</td><td>SQL injection / unauthorized access attempts</td></tr>
+      <tr><td>Usability</td><td>Ease of use</td><td>Can a new user complete signup unaided?</td></tr>
+      <tr><td>Compatibility</td><td>Works across environments</td><td>Runs correctly on Chrome, Safari, mobile</td></tr>
+      <tr><td>Recovery</td><td>Bounces back after failure</td><td>App restarts cleanly after server crash</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> Each type answers a different question: works? fast? scales? safe? easy? everywhere? recovers?</div>
+  </section>
+
+  <!-- 34. White Box Testing -->
+  <section class="card" id="wbtest">
+    <h2><span class="no">34</span> White Box Testing (with example)</h2>
+    <div class="sub">Tests the internal code structure &amp; logic — tester needs access to the source code.</div>
+
+    <div class="box"><h4>Example</h4><ul>
+      <li>Code: <code>if (score &gt;= 40) grade="Pass"; else grade="Fail";</code></li>
+      <li>Test 1: score=45 → covers the "if" (true) branch</li>
+      <li>Test 2: score=30 → covers the "else" (false) branch</li>
+      <li>Together these give 100% branch/statement coverage of this snippet</li>
+    </ul></div>
+    <div class="keyline"><b>Common techniques:</b> Statement coverage · Branch/Decision coverage · Condition coverage · Path coverage · Data flow testing.</div>
+    <div class="keyline"><b>Memorize:</b> White box = you can <b>see through</b> the code (glass-box testing).</div>
+  </section>
+
+  <!-- 35. White vs Black Box -->
+  <section class="card" id="wbvsbb">
+    <h2><span class="no">35</span> White Box vs Black Box Testing</h2>
+    <table>
+      <tr><th>White Box</th><th>Black Box</th></tr>
+      <tr><td>Internal code structure is known</td><td>Internal code is unknown/irrelevant</td></tr>
+      <tr><td>Done by developers</td><td>Done by independent testers</td></tr>
+      <tr><td>Based on code logic</td><td>Based on requirements/specifications</td></tr>
+      <tr><td>Used at Unit &amp; Integration levels</td><td>Used at System &amp; Acceptance levels</td></tr>
+      <tr><td>Eg: statement/branch coverage</td><td>Eg: boundary value analysis, equivalence partitioning</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> White box = <b>"how"</b> it works internally. Black box = <b>"what"</b> it does for the user.</div>
+  </section>
+
+  <!-- 36. Statement Coverage -->
+  <section class="card" id="stmtcov">
+    <h2><span class="no">36</span> Statement Coverage Technique</h2>
+    <div class="sub">Ensures every executable statement in the code runs at least once.</div>
+
+    <div class="calc">Statement Coverage % = (Statements Executed / Total Statements) × 100</div>
+    <div class="box"><h4>Example</h4><ul>
+      <li>Code: <code>read(a,b); if(a&gt;b){ max=a; } print(max);</code></li>
+      <li>One test case with a=5, b=3 executes every line → <span class="ans">100% statement coverage</span></li>
+      <li>But it never tests the "a≤b" case — a weakness of this technique</li>
+    </ul></div>
+    <div class="keyline"><b>Memorize:</b> Weakest white-box criterion — a line can "pass" even if the <b>logic/branch</b> around it was never truly tested both ways.</div>
+  </section>
+
+  <!-- 37. Condition Coverage -->
+  <section class="card" id="condcov">
+    <h2><span class="no">37</span> Condition Coverage</h2>
+    <div class="sub">Ensures every individual boolean sub-condition inside a decision evaluates to both True and False at least once.</div>
+
+    <div class="box"><h4>Example: <code>if (A &amp;&amp; B)</code></h4>
+      <table style="margin-top:8px;">
+        <tr><th>Test</th><th>A</th><th>B</th></tr>
+        <tr><td>1</td><td>True</td><td>False</td></tr>
+        <tr><td>2</td><td>False</td><td>True</td></tr>
+      </table>
+    </div>
+    <div class="keyline">Both tests together cover A=T, A=F, B=T, B=F — but note the overall <code>if</code> never evaluated <b>True</b> here, so condition coverage alone doesn't guarantee decision coverage.</div>
+    <div class="keyline"><b>Memorize:</b> Statement coverage &lt; Decision coverage &lt; Condition coverage &lt; Multiple-condition coverage — each is stricter than the last.</div>
+  </section>
+
+  <!-- 38. Data Flow Testing -->
+  <section class="card" id="dataflow">
+    <h2><span class="no">38</span> Data Flow Testing Technique</h2>
+    <div class="sub">White-box technique that tracks how a variable is <b>defined</b> and later <b>used</b>, testing each def-use path.</div>
+
+    <div class="box"><h4>Key Terms</h4><ul>
+      <li><b>def</b> — a variable is assigned a value (e.g. <code>x = 5;</code>)</li>
+      <li><b>c-use</b> — computational use, variable used in a calculation (e.g. <code>y = x + 1;</code>)</li>
+      <li><b>p-use</b> — predicate use, variable used in a condition (e.g. <code>if (x &gt; 0)</code>)</li>
+    </ul></div>
+    <div class="keyline"><b>Example:</b> <code>x = read(); if (x &gt; 0) y = x*2; else y = 0;</code> → test cases must exercise the def of <code>x</code> flowing into <b>both</b> its p-use (the if) and its c-use (<code>x*2</code>).</div>
+    <div class="keyline"><b>Memorize:</b> "Follow the variable's life — from where it's <b>born</b> (def) to everywhere it's <b>read</b> (use)."</div>
+  </section>
+
+  <!-- 39. Boundary Value Testing -->
+  <section class="card" id="bvt">
+    <h2><span class="no">39</span> Boundary Value Testing (Black Box, with real-life examples)</h2>
+    <div class="sub">Bugs cluster at the <b>edges</b> of valid input ranges — so test just below, at, and just above each boundary.</div>
+
+    <div class="box"><h4>Example: Age field, valid range 18–60</h4><ul>
+      <li>Lower boundary: test 17 (invalid), 18 (valid), 19 (valid)</li>
+      <li>Upper boundary: test 59 (valid), 60 (valid), 61 (invalid)</li>
+    </ul></div>
+    <div class="keyline"><b>Real life:</b> ATM daily withdrawal limit ₹500–₹40,000 → test ₹499, ₹500, ₹501, ₹39,999, ₹40,000, ₹40,001.</div>
+    <div class="keyline"><b>Memorize:</b> "Don't just test the middle — <b>test the edges</b>, that's where off-by-one bugs hide."</div>
+  </section>
+
+  <!-- 40. Maintenance Types -->
+  <section class="card" id="maint">
+    <h2><span class="no">40</span> Corrective, Adaptive, Perfective &amp; Preventive Maintenance</h2>
+    <table>
+      <tr><th>Type</th><th>Why</th><th>Example</th></tr>
+      <tr><td><b>Corrective</b></td><td>Fix a defect found in production</td><td>Fixing a crash reported by users</td></tr>
+      <tr><td><b>Adaptive</b></td><td>Adjust to a changed environment</td><td>Updating an app for a new Android/OS version</td></tr>
+      <tr><td><b>Perfective</b></td><td>Improve/enhance based on user feedback</td><td>Adding a "dark mode", optimizing slow queries</td></tr>
+      <tr><td><b>Preventive</b></td><td>Improve maintainability before problems arise</td><td>Refactoring messy legacy code proactively</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> "<b>C</b>orrect a bug, <b>A</b>dapt to change, make it <b>P</b>erfect(er), <b>P</b>revent future pain" — CAPP.</div>
+  </section>
+
+  <!-- 41. MTBF vs MTTR -->
+  <section class="card" id="mtbfmttr">
+    <h2><span class="no">41</span> MTBF vs MTTR</h2>
+    <div class="calc">
+      MTBF (Mean Time Between Failures) = Total Uptime / Number of Failures &nbsp;→ <span class="r">higher = more reliable</span><br>
+      MTTR (Mean Time To Repair) = Total Repair Time / Number of Failures &nbsp;→ <span class="r">lower = easier to maintain</span>
+    </div>
+    <div class="calc">
+      <b>Numerical:</b> System ran 1000 hrs total, failed 5 times, total repair time = 10 hrs.<br>
+      Uptime = 1000 − 10 = 990 hrs<br>
+      MTBF = 990 / 5 = <span class="ans">198 hrs</span><br>
+      MTTR = 10 / 5 = <span class="ans">2 hrs</span><br>
+      Availability = MTBF/(MTBF+MTTR) = 198/200 = <span class="ans">99%</span>
+    </div>
+    <div class="keyline"><b>Memorize:</b> MTBF = how long it <b>lasts</b>. MTTR = how fast it <b>heals</b>.</div>
+  </section>
+
+  <!-- 42. Reverse Engineering -->
+  <section class="card" id="reveng">
+    <h2><span class="no">42</span> Reverse Engineering (with real-life examples)</h2>
+    <div class="sub">Analyzing an existing system to recover its design/architecture — going from code back to design (opposite of forward engineering).</div>
+
+    <div class="box"><h4>Real-life Examples</h4><ul>
+      <li>Studying a 20-year-old undocumented COBOL banking system to rebuild its design before migrating it to Java</li>
+      <li>Decompiling an old <code>.exe</code> to understand undocumented behaviour</li>
+      <li>Analyzing a competitor's app to understand how a feature works</li>
+    </ul></div>
+    <div class="keyline"><b>Memorize:</b> Forward engineering: requirements → code. Reverse engineering: <b>code → requirements/design</b>.</div>
+  </section>
+
+  <!-- 43. CASE Tools -->
+  <section class="card" id="case">
+    <h2><span class="no">43</span> CASE Tools</h2>
+    <div class="sub">Computer-Aided Software Engineering — tools that automate SDLC activities.</div>
+
+    <table>
+      <tr><th>Category</th><th>Covers</th><th>Example Tools</th></tr>
+      <tr><td>Upper CASE</td><td>Requirements, analysis, design</td><td>Rational Rose, Visual Paradigm (UML)</td></tr>
+      <tr><td>Lower CASE</td><td>Code generation, testing, deployment</td><td>Selenium, Git, Jenkins</td></tr>
+      <tr><td>Integrated CASE (I-CASE)</td><td>Full lifecycle, upper + lower combined</td><td>Enterprise Architect</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> CASE tools = "<b>automation for building software</b>" — same spirit as CAD for engineers.</div>
+  </section>
+
+  <!-- 44. Performance Testing -->
+  <section class="card" id="perftest">
+    <h2><span class="no">44</span> Performance Testing (with real-life examples)</h2>
+    <table>
+      <tr><th>Type</th><th>Simulates</th></tr>
+      <tr><td>Load Testing</td><td>Expected/normal number of users</td></tr>
+      <tr><td>Stress Testing</td><td>Beyond maximum capacity, until it breaks</td></tr>
+      <tr><td>Spike Testing</td><td>Sudden, sharp surge in traffic</td></tr>
+      <tr><td>Soak/Endurance Testing</td><td>Sustained load over a long duration</td></tr>
+    </table>
+    <div class="keyline"><b>Real life:</b> Amazon/Flipkart simulate millions of concurrent shoppers before a "Big Billion Days" sale to confirm the site stays fast and doesn't crash. Tools: JMeter, LoadRunner.</div>
+    <div class="keyline"><b>Memorize:</b> Performance testing asks: "does it stay <b>fast and stable</b> under pressure?"</div>
+  </section>
+
+  <!-- 45. Regression Testing -->
+  <section class="card" id="regtest">
+    <h2><span class="no">45</span> Regression Testing (with real-life examples)</h2>
+    <div class="sub">Re-run existing tests after a change to make sure nothing that used to work is now broken.</div>
+
+    <div class="keyline"><b>Real life:</b> After adding an "Apply Coupon" feature to a shopping cart, re-test Add-to-Cart, Checkout, and Payment flows to confirm they still work.</div>
+    <div class="box"><h4>Key Points</h4><ul>
+      <li>Run after every bug fix, patch, or new feature</li>
+      <li>Usually automated — same tests run repeatedly</li>
+    </ul></div>
+    <div class="keyline"><b>Memorize:</b> "New code shouldn't <b>break old features</b>" — that's what regression testing checks.</div>
+  </section>
+
+  <!-- 46. Introduction to UML -->
+  <section class="card" id="uml">
+    <h2><span class="no">46</span> Introduction to UML</h2>
+    <div class="sub">UML (Unified Modeling Language) — a standard visual notation to design, specify, and document a software system.</div>
+
+    <table>
+      <tr><th>Structural Diagrams (static)</th><th>Behavioural Diagrams (dynamic)</th></tr>
+      <tr><td>Class, Object, Component, Deployment</td><td>Use Case, Sequence, Activity, State</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> Structural = "what the system <b>is</b>". Behavioural = "what the system <b>does</b>".</div>
+  </section>
+
+  <!-- 47. Use Case Diagram -->
+  <section class="card" id="usecase">
+    <h2><span class="no">47</span> Use Case Diagram</h2>
+    <div class="sub">Shows functional requirements — actors and the services (use cases) the system offers them.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 460 260" width="420">
+        <defs><marker id="arruc" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#b5651d"/></marker></defs>
+        <g stroke="#1c5d78" fill="none">
+          <circle cx="45" cy="70" r="12"/>
+          <line x1="45" y1="82" x2="45" y2="120"/>
+          <line x1="25" y1="98" x2="65" y2="98"/>
+          <line x1="45" y1="120" x2="28" y2="150"/>
+          <line x1="45" y1="120" x2="62" y2="150"/>
+        </g>
+        <text x="45" y="170" text-anchor="middle" font-size="11">Customer</text>
+
+        <rect x="140" y="15" width="300" height="220" fill="none" stroke="#a9bdc9" stroke-dasharray="3 4"/>
+        <text x="290" y="8" text-anchor="middle" font-size="10.5" fill="#b5651d">Online Banking System</text>
+
+        <ellipse cx="290" cy="55" rx="80" ry="24" fill="none" stroke="#1c5d78"/><text x="290" y="59" text-anchor="middle" font-size="11">Login</text>
+        <ellipse cx="290" cy="105" rx="90" ry="24" fill="none" stroke="#1c5d78"/><text x="290" y="109" text-anchor="middle" font-size="11">View Balance</text>
+        <ellipse cx="290" cy="155" rx="90" ry="24" fill="none" stroke="#1c5d78"/><text x="290" y="159" text-anchor="middle" font-size="11">Transfer Funds</text>
+        <ellipse cx="290" cy="205" rx="90" ry="24" fill="none" stroke="#1c5d78"/><text x="290" y="209" text-anchor="middle" font-size="11">Withdraw Cash</text>
+
+        <line x1="70" y1="90" x2="215" y2="60" stroke="#1c5d78"/>
+        <line x1="70" y1="100" x2="205" y2="105" stroke="#1c5d78"/>
+        <line x1="70" y1="115" x2="205" y2="150" stroke="#1c5d78"/>
+        <line x1="70" y1="130" x2="205" y2="200" stroke="#1c5d78"/>
+
+        <line x1="290" y1="131" x2="290" y2="79" stroke="#b5651d" stroke-dasharray="3 3" marker-end="url(#arruc)"/>
+        <text x="310" y="100" font-size="9" fill="#b5651d">&lt;&lt;include&gt;&gt;</text>
+      </svg>
+    </div>
+    <div class="keyline"><b>Memorize:</b> Stick figure = actor, oval = use case, box = system boundary. <b>&lt;&lt;include&gt;&gt;</b> = always happens; <b>&lt;&lt;extend&gt;&gt;</b> = happens only sometimes.</div>
+  </section>
+
+  <!-- 48. Sequence Diagram -->
+  <section class="card" id="seqdiag">
+    <h2><span class="no">48</span> Sequence Diagram</h2>
+    <div class="sub">Shows objects exchanging messages over time (top → bottom = time passing).</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 480 260" width="440">
+        <defs><marker id="arrseq" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/></marker></defs>
+        <g font-size="11">
+        <rect x="10" y="10" width="80" height="28" fill="none" stroke="#1c5d78"/><text x="50" y="29" text-anchor="middle">User</text>
+        <rect x="150" y="10" width="80" height="28" fill="none" stroke="#1c5d78"/><text x="190" y="29" text-anchor="middle">UI</text>
+        <rect x="290" y="10" width="80" height="28" fill="none" stroke="#1c5d78"/><text x="330" y="29" text-anchor="middle">Server</text>
+        <rect x="400" y="10" width="70" height="28" fill="none" stroke="#1c5d78"/><text x="435" y="29" text-anchor="middle">DB</text>
+        </g>
+        <line x1="50" y1="38" x2="50" y2="240" stroke="#a9bdc9" stroke-dasharray="3 3"/>
+        <line x1="190" y1="38" x2="190" y2="240" stroke="#a9bdc9" stroke-dasharray="3 3"/>
+        <line x1="330" y1="38" x2="330" y2="240" stroke="#a9bdc9" stroke-dasharray="3 3"/>
+        <line x1="435" y1="38" x2="435" y2="240" stroke="#a9bdc9" stroke-dasharray="3 3"/>
+
+        <line x1="50" y1="65" x2="188" y2="65" stroke="#1c5d78" marker-end="url(#arrseq)"/><text x="120" y="60" text-anchor="middle" font-size="9.5">enter credentials</text>
+        <line x1="190" y1="95" x2="328" y2="95" stroke="#1c5d78" marker-end="url(#arrseq)"/><text x="260" y="90" text-anchor="middle" font-size="9.5">validate()</text>
+        <line x1="330" y1="125" x2="433" y2="125" stroke="#1c5d78" marker-end="url(#arrseq)"/><text x="380" y="120" text-anchor="middle" font-size="9.5">checkUser()</text>
+        <line x1="435" y1="155" x2="332" y2="155" stroke="#b5651d" stroke-dasharray="4 3" marker-end="url(#arrseq)"/><text x="380" y="150" text-anchor="middle" font-size="9.5" fill="#b5651d">userRecord</text>
+        <line x1="330" y1="185" x2="192" y2="185" stroke="#b5651d" stroke-dasharray="4 3" marker-end="url(#arrseq)"/><text x="260" y="180" text-anchor="middle" font-size="9.5" fill="#b5651d">success/fail</text>
+        <line x1="190" y1="215" x2="52" y2="215" stroke="#b5651d" stroke-dasharray="4 3" marker-end="url(#arrseq)"/><text x="120" y="210" text-anchor="middle" font-size="9.5" fill="#b5651d">show result</text>
+      </svg>
+    </div>
+    <div class="keyline"><b>Memorize:</b> Solid arrow = call/request. Dashed arrow = return/response. Vertical dashed line = lifeline (object's existence over time).</div>
+  </section>
+
+  <!-- 49. Activity Diagram -->
+  <section class="card" id="actdiag">
+    <h2><span class="no">49</span> Activity Diagram</h2>
+    <div class="sub">Models a workflow/business process — like a flowchart, but UML-standard.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 340 400" width="300">
+        <defs><marker id="arract" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/></marker></defs>
+        <circle cx="170" cy="15" r="10" fill="#1c5d78"/>
+        <rect x="105" y="45" width="130" height="34" rx="16" fill="none" stroke="#1c5d78"/><text x="170" y="66" text-anchor="middle" font-size="11">Place Order</text>
+        <rect x="105" y="99" width="130" height="34" rx="16" fill="none" stroke="#1c5d78"/><text x="170" y="120" text-anchor="middle" font-size="11">Check Stock</text>
+        <polygon points="170,145 210,175 170,205 130,175" fill="none" stroke="#b5651d"/><text x="170" y="179" text-anchor="middle" font-size="9.5" fill="#b5651d">In Stock?</text>
+        <rect x="210" y="230" width="120" height="34" rx="16" fill="none" stroke="#1c5d78"/><text x="270" y="251" text-anchor="middle" font-size="10.5">Process Payment</text>
+        <rect x="210" y="284" width="120" height="34" rx="16" fill="none" stroke="#1c5d78"/><text x="270" y="305" text-anchor="middle" font-size="11">Ship Order</text>
+        <rect x="5" y="230" width="130" height="34" rx="16" fill="none" stroke="#1c5d78"/><text x="70" y="251" text-anchor="middle" font-size="10">Notify Customer</text>
+        <circle cx="170" cy="360" r="12" fill="none" stroke="#1c5d78"/><circle cx="170" cy="360" r="6" fill="#1c5d78"/>
+
+        <line x1="170" y1="25" x2="170" y2="43" stroke="#1c5d78" marker-end="url(#arract)"/>
+        <line x1="170" y1="79" x2="170" y2="97" stroke="#1c5d78" marker-end="url(#arract)"/>
+        <line x1="170" y1="133" x2="170" y2="143" stroke="#1c5d78" marker-end="url(#arract)"/>
+        <line x1="205" y1="180" x2="270" y2="228" stroke="#1c5d78" marker-end="url(#arract)"/><text x="245" y="210" font-size="9.5">Yes</text>
+        <line x1="135" y1="180" x2="70" y2="228" stroke="#1c5d78" marker-end="url(#arract)"/><text x="90" y="210" font-size="9.5">No</text>
+        <line x1="270" y1="264" x2="270" y2="282" stroke="#1c5d78" marker-end="url(#arract)"/>
+        <path d="M270,318 C270,345 190,345 176,353" fill="none" stroke="#1c5d78" marker-end="url(#arract)"/>
+        <path d="M70,264 C70,320 150,345 158,354" fill="none" stroke="#1c5d78" marker-end="url(#arract)"/>
+      </svg>
+    </div>
+    <div class="keyline"><b>Memorize:</b> Filled circle = start. Diamond = decision. Circle-with-ring = end. Rounded box = an action.</div>
+  </section>
+
+  <!-- 50. Class Diagram - Banking -->
+  <section class="card" id="classbank">
+    <h2><span class="no">50</span> Class Diagram — Banking System (Real-life Example)</h2>
+    <div class="sub">Static structure: classes, their attributes/methods, and how classes relate.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 560 320" width="520">
+        <g font-size="10.5">
+        <rect x="210" y="10" width="150" height="90" fill="none" stroke="#1c5d78"/>
+        <line x1="210" y1="32" x2="360" y2="32" stroke="#1c5d78"/><line x1="210" y1="66" x2="360" y2="66" stroke="#1c5d78"/>
+        <text x="285" y="25" text-anchor="middle" font-weight="700">Account</text>
+        <text x="216" y="45" font-size="9.5">- accNo, balance</text>
+        <text x="216" y="80" font-size="9.5">+ deposit()</text>
+        <text x="216" y="92" font-size="9.5">+ withdraw()</text>
+
+        <rect x="80" y="150" width="140" height="46" fill="none" stroke="#1c5d78"/><text x="150" y="170" text-anchor="middle" font-weight="700">SavingsAccount</text><text x="86" y="188" font-size="9.5">+ interestRate</text>
+        <rect x="340" y="150" width="140" height="46" fill="none" stroke="#1c5d78"/><text x="410" y="170" text-anchor="middle" font-weight="700">CurrentAccount</text><text x="346" y="188" font-size="9.5">+ overdraftLimit</text>
+
+        <rect x="10" y="10" width="140" height="60" fill="none" stroke="#1c5d78"/><text x="80" y="30" text-anchor="middle" font-weight="700">Customer</text><text x="16" y="50" font-size="9.5">- name, custId</text>
+
+        <rect x="220" y="240" width="140" height="60" fill="none" stroke="#1c5d78"/><text x="290" y="260" text-anchor="middle" font-weight="700">Transaction</text><text x="226" y="280" font-size="9.5">- amount, date, type</text>
+        </g>
+
+        <polygon points="285,100 265,140 305,140" fill="#f6f8fa" stroke="#1c5d78"/>
+        <line x1="150" y1="150" x2="278" y2="130" stroke="#1c5d78"/>
+        <line x1="410" y1="150" x2="292" y2="130" stroke="#1c5d78"/>
+
+        <line x1="150" y1="55" x2="210" y2="45" stroke="#1c5d78"/>
+        <text x="165" y="45" font-size="9">1..* owns</text>
+
+        <polygon points="285,100 275,110 285,120 295,110" fill="#1c5d78"/>
+        <line x1="285" y1="120" x2="285" y2="240" stroke="#1c5d78"/>
+        <text x="292" y="220" font-size="9">1..*</text>
+      </svg>
+    </div>
+    <div class="keyline"><b>Relationships used:</b> Inheritance (hollow triangle) Account → Savings/Current · Composition (filled diamond) Account → Transaction · Association Customer → Account.</div>
+  </section>
+
+  <!-- 51. Class Diagram - OTT -->
+  <section class="card" id="classott">
+    <h2><span class="no">51</span> Class Diagram — OTT Platform (Real-life Example)</h2>
+    <div class="sub">Same notation, a streaming-service (Netflix-style) domain.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 560 260" width="520">
+        <g font-size="10.5">
+        <rect x="10" y="10" width="130" height="60" fill="none" stroke="#1c5d78"/><text x="75" y="30" text-anchor="middle" font-weight="700">User</text><text x="16" y="50" font-size="9.5">- name, email</text>
+
+        <rect x="10" y="120" width="130" height="60" fill="none" stroke="#1c5d78"/><text x="75" y="140" text-anchor="middle" font-weight="700">Profile</text><text x="16" y="160" font-size="9.5">- name, avatar</text>
+
+        <rect x="220" y="10" width="140" height="46" fill="none" stroke="#1c5d78"/><text x="290" y="30" text-anchor="middle" font-weight="700">Subscription</text><text x="226" y="46" font-size="9.5">- plan, expiryDate</text>
+
+        <rect x="220" y="140" width="140" height="70" fill="none" stroke="#1c5d78"/>
+        <line x1="220" y1="162" x2="360" y2="162" stroke="#1c5d78"/>
+        <text x="290" y="155" text-anchor="middle" font-weight="700">Content</text>
+        <text x="226" y="177" font-size="9.5">- title, duration</text>
+        <text x="226" y="192" font-size="9.5">+ play()</text>
+
+        <rect x="410" y="110" width="120" height="40" fill="none" stroke="#1c5d78"/><text x="470" y="130" text-anchor="middle" font-weight="700">Movie</text>
+        <rect x="410" y="200" width="120" height="40" fill="none" stroke="#1c5d78"/><text x="470" y="220" text-anchor="middle" font-weight="700">Series</text>
+        </g>
+
+        <line x1="140" y1="30" x2="220" y2="30" stroke="#1c5d78"/><text x="150" y="22" font-size="9">1..1</text>
+        <polygon points="75,70 65,80 75,90 85,80" fill="#1c5d78"/><line x1="75" y1="90" x2="75" y2="118" stroke="#1c5d78"/>
+        <line x1="140" y1="150" x2="218" y2="165" stroke="#1c5d78"/><text x="155" y="160" font-size="9">watches *</text>
+        <polygon points="380,145 400,130 400,160" fill="#f6f8fa" stroke="#1c5d78"/>
+        <line x1="400" y1="130" x2="408" y2="130" stroke="#1c5d78"/>
+        <line x1="400" y1="160" x2="408" y2="220" stroke="#1c5d78"/>
+      </svg>
+    </div>
+    <div class="keyline"><b>Memorize:</b> Same 3 building blocks every time — <b>inheritance</b> (is-a), <b>composition/aggregation</b> (has-a), <b>association</b> (uses/knows).</div>
+  </section>
+
+  <!-- 52. Object Diagram -->
+  <section class="card" id="objdiag">
+    <h2><span class="no">52</span> Object Diagram — Class vs Object</h2>
+    <div class="sub">A class = the blueprint. An object diagram = a snapshot of real <b>instances</b> with actual data, at one moment.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 460 140" width="420">
+        <g font-size="11">
+        <rect x="20" y="10" width="160" height="90" fill="none" stroke="#1c5d78"/>
+        <line x1="20" y1="32" x2="180" y2="32" stroke="#1c5d78"/>
+        <text x="100" y="25" text-anchor="middle" font-weight="700">Account (class)</text>
+        <text x="26" y="50" font-size="9.5">- accountNumber</text>
+        <text x="26" y="65" font-size="9.5">- balance</text>
+        <text x="26" y="85" font-size="9.5">+ deposit(), withdraw()</text>
+
+        <rect x="270" y="10" width="170" height="70" fill="none" stroke="#b5651d"/>
+        <line x1="270" y1="32" x2="440" y2="32" stroke="#b5651d"/>
+        <text x="355" y="25" text-anchor="middle" font-weight="700" fill="#b5651d">acc101 : Account</text>
+        <text x="276" y="50" font-size="9.5">accountNumber = 101</text>
+        <text x="276" y="65" font-size="9.5">balance = ₹5,000</text>
+        </g>
+        <line x1="180" y1="55" x2="268" y2="45" stroke="#1c5d78" stroke-dasharray="3 3"/>
+      </svg>
+    </div>
+    <table>
+      <tr><th>Class Diagram</th><th>Object Diagram</th></tr>
+      <tr><td>General template, shows attribute <b>types</b></td><td>Specific instance, shows attribute <b>values</b></td></tr>
+      <tr><td>Includes methods</td><td>Usually values only, no methods</td></tr>
+      <tr><td>Static, always true</td><td>True at one moment in time</td></tr>
+    </table>
+  </section>
+
+  <!-- 53. RAD Model -->
+  <section class="card" id="rad">
+    <h2><span class="no">53</span> RAD Model (Rapid Application Development)</h2>
+    <div class="sub">Emphasizes speed — parallel teams build components quickly using heavy prototyping &amp; reuse, short cycles (60–90 days).</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 460 200" width="420">
+        <defs><marker id="arrrad" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M0,0 L10,5 L0,10 z" fill="#1c5d78"/></marker></defs>
+        <g font-size="9.5">
+        <rect x="10" y="10" width="330" height="34" fill="none" stroke="#1c5d78"/><text x="175" y="32" text-anchor="middle">Team A: Model → Build → Test</text>
+        <rect x="10" y="60" width="330" height="34" fill="none" stroke="#1c5d78"/><text x="175" y="82" text-anchor="middle">Team B: Model → Build → Test</text>
+        <rect x="10" y="110" width="330" height="34" fill="none" stroke="#1c5d78"/><text x="175" y="132" text-anchor="middle">Team C: Model → Build → Test</text>
+        <rect x="360" y="60" width="90" height="60" fill="none" stroke="#b5651d"/><text x="405" y="85" text-anchor="middle" fill="#b5651d">Integrate</text><text x="405" y="100" text-anchor="middle" fill="#b5651d">&amp; Deliver</text>
+        </g>
+        <line x1="340" y1="27" x2="358" y2="70" stroke="#1c5d78" marker-end="url(#arrrad)"/>
+        <line x1="340" y1="77" x2="358" y2="90" stroke="#1c5d78" marker-end="url(#arrrad)"/>
+        <line x1="340" y1="127" x2="358" y2="105" stroke="#1c5d78" marker-end="url(#arrrad)"/>
+      </svg>
+    </div>
+    <div class="grid2">
+      <div class="box"><h4>Phases</h4><ul>
+        <li>Business Modeling → Data Modeling → Process Modeling → Application Generation → Testing &amp; Turnover</li>
+      </ul></div>
+      <div class="box neg"><h4>Limits</h4><ul>
+        <li>Needs modular system + heavily involved users</li>
+        <li>Not suited for large, monolithic, high-risk systems</li>
+      </ul></div>
+    </div>
+    <div class="keyline"><b>Memorize:</b> RAD = Incremental model taken to the extreme — <b>parallel teams, 60–90 day cycles</b>.</div>
+  </section>
+
+  <!-- 54. FP vs LOC -->
+  <section class="card" id="fpvsloc">
+    <h2><span class="no">54</span> Function Point (FP) vs Lines of Code (LOC)</h2>
+    <table>
+      <tr><th>LOC</th><th>Function Point</th></tr>
+      <tr><td>Counts lines of source code</td><td>Counts delivered functionality (user's view)</td></tr>
+      <tr><td>Depends on programming language</td><td>Language-independent</td></tr>
+      <tr><td>Same feature = different LOC in Java vs Python</td><td>Same feature = same FP regardless of language</td></tr>
+      <tr><td>Easy to measure after coding</td><td>Can be estimated even before coding starts</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> LOC measures <b>how much was typed</b>. FP measures <b>how much was delivered</b>.</div>
+  </section>
+
+  <!-- 55. FPA -->
+  <section class="card" id="fpa">
+    <h2><span class="no">55</span> Function Point Analysis (FPA)</h2>
+    <div class="sub">Measures software size from the user's point of view, based on 5 function types.</div>
+
+    <table>
+      <tr><th>Function Type</th><th>Meaning</th></tr>
+      <tr><td>External Input (EI)</td><td>Data entering the system (e.g. a form submit)</td></tr>
+      <tr><td>External Output (EO)</td><td>Data leaving the system (e.g. a report)</td></tr>
+      <tr><td>External Inquiry (EQ)</td><td>Input+output combo with no data stored (e.g. a search)</td></tr>
+      <tr><td>Internal Logical File (ILF)</td><td>Data maintained inside the system (e.g. a DB table)</td></tr>
+      <tr><td>External Interface File (EIF)</td><td>Data referenced from another system</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> "3 flows in/out/around (EI, EO, EQ) + 2 files (ILF, EIF)" = the 5 FP components.</div>
+  </section>
+
+  <!-- 56. FP Calculation Numerical -->
+  <section class="card" id="fpcalc">
+    <h2><span class="no">56</span> Function Point Calculation — Numerical</h2>
+    <div class="calc">UFP (Unadjusted FP) = Σ (count × weight) for each function type<br>
+    FP = UFP × CAF, &nbsp; CAF = 0.65 + 0.01 × (sum of 14 General System Characteristics, each rated 0–5)</div>
+
+    <table>
+      <tr><th>Type</th><th>Count</th><th>Weight (avg)</th><th>Total</th></tr>
+      <tr><td>EI</td><td>3</td><td>4</td><td>12</td></tr>
+      <tr><td>EO</td><td>2</td><td>5</td><td>10</td></tr>
+      <tr><td>EQ</td><td>2</td><td>4</td><td>8</td></tr>
+      <tr><td>ILF</td><td>1</td><td>10</td><td>10</td></tr>
+      <tr><td>EIF</td><td>2</td><td>7</td><td>14</td></tr>
+    </table>
+    <div class="calc">
+      UFP = 12+10+8+10+14 = <span class="ans">54</span><br>
+      Sum of 14 GSC ratings = 35 → CAF = 0.65 + 0.01×35 = <span class="ans">1.00</span><br>
+      FP = 54 × 1.00 = <span class="ans">54 Function Points</span>
+    </div>
+    <div class="keyline"><b>Memorize:</b> Count the 5 function types with their complexity weights → adjust by CAF → that's your project's FP size (used for effort/cost estimation).</div>
+  </section>
+
+  <!-- 57. Aggregation vs Composition -->
+  <section class="card" id="aggcomp">
+    <h2><span class="no">57</span> Aggregation vs Composition in UML</h2>
+    <div class="sub">Both are "has-a" relationships — the difference is whether the <b>part can survive without the whole</b>.</div>
+
+    <div class="diagram">
+      <svg viewBox="0 0 480 140" width="440">
+        <g font-size="11">
+        <rect x="10" y="20" width="120" height="34" fill="none" stroke="#1c5d78"/><text x="70" y="42" text-anchor="middle">Department</text>
+        <rect x="230" y="20" width="120" height="34" fill="none" stroke="#1c5d78"/><text x="290" y="42" text-anchor="middle">Professor</text>
+        <polygon points="130,37 145,30 160,37 145,44" fill="#f6f8fa" stroke="#1c5d78"/>
+        <line x1="160" y1="37" x2="230" y2="37" stroke="#1c5d78"/>
+        <text x="190" y="18" text-anchor="middle" font-size="9.5" fill="#b5651d">Aggregation (hollow ◇)</text>
+
+        <rect x="10" y="90" width="120" height="34" fill="none" stroke="#1c5d78"/><text x="70" y="112" text-anchor="middle">House</text>
+        <rect x="230" y="90" width="120" height="34" fill="none" stroke="#1c5d78"/><text x="290" y="112" text-anchor="middle">Room</text>
+        <polygon points="130,107 145,100 160,107 145,114" fill="#1c5d78" stroke="#1c5d78"/>
+        <line x1="160" y1="107" x2="230" y2="107" stroke="#1c5d78"/>
+        <text x="190" y="132" text-anchor="middle" font-size="9.5" fill="#b5651d">Composition (filled ◆)</text>
+        </g>
+      </svg>
+    </div>
+
+    <table>
+      <tr><th>Aggregation</th><th>Composition</th></tr>
+      <tr><td>Weak "has-a" — part can exist independently</td><td>Strong "part-of" — part's lifecycle depends on whole</td></tr>
+      <tr><td>Professor still exists if Department is dissolved</td><td>Room is destroyed if the House is demolished</td></tr>
+      <tr><td>Part can belong to multiple wholes</td><td>Part belongs to exactly one whole</td></tr>
+      <tr><td>Hollow diamond ◇</td><td>Filled diamond ◆</td></tr>
+    </table>
+    <div class="keyline"><b>Memorize:</b> Hollow diamond = "<b>can live apart</b>". Filled diamond = "<b>dies together</b>".</div>
+  </section>
+
+
 </div>
 
-<div class="foot">— End of Notes · Part 1 (SDLC Models) + Part 2 (Requirements, Design, Risk, Estimation &amp; Testing) —</div>
+<div class="foot">— End of Notes · Part 1 (SDLC Models) · Part 2 (Requirements, Design, Risk, Estimation &amp; Testing) · Part 3 (Complexity, Testing Deep-Dive, Maintenance &amp; UML) —</div>
 
 </body>
 </html>
